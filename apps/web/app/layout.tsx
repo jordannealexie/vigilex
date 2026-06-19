@@ -5,11 +5,12 @@ import "@fontsource/inter"
 import "@fontsource/jetbrains-mono"
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { motion, AnimatePresence } from "framer-motion"
 import { 
+  LayoutDashboard, 
   Activity, 
   AlertTriangle, 
   BarChart3, 
-  LayoutDashboard, 
   Settings, 
   Zap, 
   Sun, 
@@ -19,15 +20,28 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
+  Search,
   LogOut
 } from "lucide-react"
 
-const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", href: "/" },
-  { icon: Activity, label: "Projects", href: "/projects" },
-  { icon: AlertTriangle, label: "Incidents", href: "/incidents" },
-  { icon: BarChart3, label: "Analytics", href: "/analytics" },
-  { icon: Settings, label: "Settings", href: "/settings" },
+const navSections = [
+  {
+    label: "Monitoring",
+    items: [
+      { icon: LayoutDashboard, label: "Dashboard", href: "/" },
+      { icon: Activity, label: "Projects", href: "/projects" },
+      { icon: AlertTriangle, label: "Incidents", href: "/incidents" },
+      { icon: BarChart3, label: "Analytics", href: "/analytics" },
+    ]
+  },
+  {
+    label: "Workspace",
+    items: [
+      { icon: Bell, label: "Notifications", href: "/notifications" },
+      { icon: User, label: "Profile", href: "/profile" },
+      { icon: Settings, label: "Settings", href: "/settings" },
+    ]
+  }
 ]
 
 export default function RootLayout({
@@ -40,7 +54,6 @@ export default function RootLayout({
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
-    // Default to dark mode
     document.documentElement.classList.add('dark')
     
     const checkMobile = () => {
@@ -76,11 +89,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="flex h-screen">
+        {/* Background Ambient Glow */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-[#FF8449] opacity-[0.03] rounded-full blur-[120px]"></div>
+          <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-[#0F445C] opacity-[0.03] rounded-full blur-[120px]"></div>
+        </div>
+
+        <div className="flex h-screen relative p-4 md:p-5 gap-4">
           {/* Mobile Menu Button */}
           <button
             onClick={toggleSidebar}
-            className="fixed top-3 left-3 z-50 md:hidden p-2 rounded-md bg-[#0E1014] border border-[var(--border-hairline)]"
+            className="fixed top-4 left-4 z-50 md:hidden p-2 rounded-xl glass-card"
             aria-label="Toggle menu"
           >
             <Menu className="h-5 w-5 text-[var(--text-secondary)]" />
@@ -89,67 +108,90 @@ export default function RootLayout({
           {/* Mobile Overlay */}
           {isMobile && isSidebarOpen && (
             <div 
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
               onClick={() => setIsSidebarOpen(false)}
             />
           )}
 
-          {/* Sidebar */}
-          <aside 
+          {/* Floating Sidebar */}
+          <motion.aside 
             className={`
-              fixed md:relative z-40
-              sidebar
+              fixed md:relative z-40 sidebar-floating
               flex flex-col 
               transition-all duration-200 ease-out
               ${isSidebarOpen ? 'w-[240px]' : 'w-[64px]'}
               ${isMobile && !isSidebarOpen ? '-translate-x-full md:translate-x-0' : 'translate-x-0'}
-              h-screen
+              h-[calc(100vh-40px)] md:h-[calc(100vh-40px)]
+              overflow-hidden
             `}
+            initial={false}
+            animate={{
+              width: isSidebarOpen ? 240 : 64,
+            }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
           >
             {/* Logo */}
-            <div className="flex items-center h-14 px-4 border-b border-[var(--border-hairline)]">
+            <div className="flex items-center h-14 px-4 border-b border-[var(--border-glass)] flex-shrink-0">
               <div className="flex items-center gap-3">
-                <Zap className="h-5 w-5 text-[#FF7A33] flex-shrink-0" />
-                {isSidebarOpen && (
-                  <span className="text-lg font-semibold text-[var(--text-primary)]">Vigilex</span>
-                )}
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'var(--accent-gradient)' }}>
+                  <Zap className="h-4 w-4 text-white" />
+                </div>
+                <AnimatePresence>
+                  {isSidebarOpen && (
+                    <motion.span
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: 'auto' }}
+                      exit={{ opacity: 0, width: 0 }}
+                      transition={{ duration: 0.15 }}
+                      className="text-lg font-semibold text-[var(--text-primary)] whitespace-nowrap"
+                    >
+                      Vigilex
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
 
-            {/* Navigation */}
-            <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`nav-item ${item.href === '/' ? 'nav-item-active' : ''}`}
-                >
-                  <item.icon className="h-4 w-4 flex-shrink-0" />
-                  {isSidebarOpen && <span>{item.label}</span>}
-                </Link>
+            {/* Navigation Sections */}
+            <nav className="flex-1 overflow-y-auto py-3 px-2">
+              {navSections.map((section) => (
+                <div key={section.label}>
+                  {isSidebarOpen && (
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.06em] text-[var(--text-tertiary)] px-3 py-2">
+                      {section.label}
+                    </div>
+                  )}
+                  {section.items.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`nav-item ${item.href === '/' ? 'nav-item-active' : ''}`}
+                    >
+                      <item.icon className="h-4 w-4 flex-shrink-0" />
+                      <AnimatePresence>
+                        {isSidebarOpen && (
+                          <motion.span
+                            initial={{ opacity: 0, width: 0 }}
+                            animate={{ opacity: 1, width: 'auto' }}
+                            exit={{ opacity: 0, width: 0 }}
+                            transition={{ duration: 0.15 }}
+                            className="whitespace-nowrap"
+                          >
+                            {item.label}
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
+                    </Link>
+                  ))}
+                  {isSidebarOpen && section !== navSections[navSections.length - 1] && (
+                    <div className="h-px bg-[var(--border-glass)] mx-3 my-2" />
+                  )}
+                </div>
               ))}
             </nav>
 
-            {/* Bottom Section */}
-            <div className="border-t border-[var(--border-hairline)] py-4 px-2 space-y-1">
-              <button className="nav-item w-full">
-                <Bell className="h-4 w-4 flex-shrink-0" />
-                {isSidebarOpen && (
-                  <>
-                    <span>Notifications</span>
-                    <span className="ml-auto text-xs px-1.5 py-0.5 rounded-sm bg-[#FF7A33] text-white">3</span>
-                  </>
-                )}
-                {!isSidebarOpen && (
-                  <span className="ml-auto text-[10px] px-1 py-0.5 rounded-sm bg-[#FF7A33] text-white">3</span>
-                )}
-              </button>
-              
-              <button className="nav-item w-full">
-                <User className="h-4 w-4 flex-shrink-0" />
-                {isSidebarOpen && <span>Profile</span>}
-              </button>
-
+            {/* Bottom Controls */}
+            <div className="border-t border-[var(--border-glass)] py-3 px-2 flex-shrink-0 space-y-1">
               <button 
                 onClick={toggleTheme}
                 className="nav-item w-full"
@@ -159,11 +201,21 @@ export default function RootLayout({
                 ) : (
                   <Moon className="h-4 w-4 flex-shrink-0" />
                 )}
-                {isSidebarOpen && (
-                  <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
-                )}
+                <AnimatePresence>
+                  {isSidebarOpen && (
+                    <motion.span
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: 'auto' }}
+                      exit={{ opacity: 0, width: 0 }}
+                      transition={{ duration: 0.15 }}
+                      className="whitespace-nowrap"
+                    >
+                      {isDark ? 'Light Mode' : 'Dark Mode'}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </button>
-
+              
               <button 
                 onClick={toggleSidebar}
                 className="nav-item w-full"
@@ -173,17 +225,34 @@ export default function RootLayout({
                 ) : (
                   <ChevronRight className="h-4 w-4 flex-shrink-0" />
                 )}
-                {isSidebarOpen && <span>Collapse</span>}
+                <AnimatePresence>
+                  {isSidebarOpen && (
+                    <motion.span
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: 'auto' }}
+                      exit={{ opacity: 0, width: 0 }}
+                      transition={{ duration: 0.15 }}
+                      className="whitespace-nowrap"
+                    >
+                      Collapse
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </button>
             </div>
-          </aside>
+          </motion.aside>
 
           {/* Main Content */}
-          <main className="flex-1 overflow-auto bg-[var(--bg-base)]">
-            <div className="p-4 md:p-6 max-w-[1440px] mx-auto">
+          <motion.main 
+            className="flex-1 overflow-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="max-w-[1440px] mx-auto">
               {children}
             </div>
-          </main>
+          </motion.main>
         </div>
       </body>
     </html>
