@@ -4,6 +4,7 @@ import "./globals.css"
 import "@fontsource/inter"
 import "@fontsource/jetbrains-mono"
 import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
@@ -20,7 +21,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
-  Search,
   LogOut
 } from "lucide-react"
 
@@ -49,6 +49,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const pathname = usePathname()
   const [isDark, setIsDark] = useState(true)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
@@ -86,20 +87,25 @@ export default function RootLayout({
     setIsSidebarOpen(!isSidebarOpen)
   }
 
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/'
+    return pathname.startsWith(href)
+  }
+
   return (
     <html lang="en">
       <body>
         {/* Background Ambient Glow */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-[#FF8449] opacity-[0.03] rounded-full blur-[120px]"></div>
-          <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-[#0F445C] opacity-[0.03] rounded-full blur-[120px]"></div>
+          <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-[#FF8449] opacity-[0.04] rounded-full blur-[120px]"></div>
+          <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-[#0F445C] opacity-[0.04] rounded-full blur-[120px]"></div>
         </div>
 
         <div className="flex h-screen relative p-4 md:p-5 gap-4">
           {/* Mobile Menu Button */}
           <button
             onClick={toggleSidebar}
-            className="fixed top-4 left-4 z-50 md:hidden p-2 rounded-xl glass-card"
+            className="fixed top-4 left-4 z-50 md:hidden p-2 rounded-xl glass"
             aria-label="Toggle menu"
           >
             <Menu className="h-5 w-5 text-[var(--text-secondary)]" />
@@ -161,28 +167,31 @@ export default function RootLayout({
                       {section.label}
                     </div>
                   )}
-                  {section.items.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`nav-item ${item.href === '/' ? 'nav-item-active' : ''}`}
-                    >
-                      <item.icon className="h-4 w-4 flex-shrink-0" />
-                      <AnimatePresence>
-                        {isSidebarOpen && (
-                          <motion.span
-                            initial={{ opacity: 0, width: 0 }}
-                            animate={{ opacity: 1, width: 'auto' }}
-                            exit={{ opacity: 0, width: 0 }}
-                            transition={{ duration: 0.15 }}
-                            className="whitespace-nowrap"
-                          >
-                            {item.label}
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                    </Link>
-                  ))}
+                  {section.items.map((item) => {
+                    const active = isActive(item.href)
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={`nav-item ${active ? 'nav-item-active' : ''}`}
+                      >
+                        <item.icon className="h-4 w-4 flex-shrink-0" />
+                        <AnimatePresence>
+                          {isSidebarOpen && (
+                            <motion.span
+                              initial={{ opacity: 0, width: 0 }}
+                              animate={{ opacity: 1, width: 'auto' }}
+                              exit={{ opacity: 0, width: 0 }}
+                              transition={{ duration: 0.15 }}
+                              className="whitespace-nowrap"
+                            >
+                              {item.label}
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
+                      </Link>
+                    )
+                  })}
                   {isSidebarOpen && section !== navSections[navSections.length - 1] && (
                     <div className="h-px bg-[var(--border-glass)] mx-3 my-2" />
                   )}
@@ -244,13 +253,15 @@ export default function RootLayout({
 
           {/* Main Content */}
           <motion.main 
-            className="flex-1 overflow-auto"
+            className="flex-1 overflow-auto bg-[var(--bg-secondary)] rounded-[var(--radius-card)] p-1"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="max-w-[1440px] mx-auto">
-              {children}
+            <div className="bg-[var(--bg-base)] rounded-[calc(var(--radius-card)-4px)] min-h-full p-1">
+              <div className="max-w-[1440px] mx-auto">
+                {children}
+              </div>
             </div>
           </motion.main>
         </div>
