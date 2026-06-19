@@ -15,7 +15,8 @@ import {
   Server,
   GitBranch,
   Circle,
-  Calendar
+  Calendar,
+  AlertCircle
 } from "lucide-react"
 import {
   LineChart,
@@ -30,7 +31,6 @@ import {
 } from 'recharts'
 import { Sparkline } from "@/components/sparkline"
 import { CountUp } from "@/components/CountUp"
-import { StatusOrb } from "@/components/StatusOrb"
 import { AIPulse } from "@/components/AIPulse"
 import { LightningWatermark } from "@/components/LightningWatermark"
 
@@ -161,15 +161,6 @@ const getTagClass = (severity: string) => {
   return classes[severity] || ''
 }
 
-const getStatusDotColor = (status: string) => {
-  const colors: Record<string, string> = {
-    healthy: '#3E8B5C',
-    warning: '#FF8449',
-    critical: '#711A00'
-  }
-  return colors[status] || '#6B7679'
-}
-
 export default function Dashboard() {
   const [selectedTimeRange, setSelectedTimeRange] = useState('24h')
   const [searchQuery, setSearchQuery] = useState('')
@@ -185,12 +176,9 @@ export default function Dashboard() {
       <LightningWatermark className="absolute right-10 bottom-10 opacity-[0.03]" size={160} />
 
       {/* Topbar */}
-      <div className="glass-topbar p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="matte-glass-strong p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-4 w-full sm:w-auto">
-          <div className="flex items-center gap-2">
-            <h1>Dashboard</h1>
-            <StatusOrb status="healthy" />
-          </div>
+          <h1>Dashboard</h1>
           <div className="relative flex-1 sm:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-tertiary)]" />
             <input 
@@ -226,7 +214,7 @@ export default function Dashboard() {
 
       {/* Bento Grid - Asymmetric Layout */}
       <div className="bento-grid">
-        {/* Stat Cards - 4 in a row but with varied sizing */}
+        {/* Stat Cards */}
         {stats.map((stat, idx) => {
           const Icon = stat.icon
           const isHero = idx === 0
@@ -236,7 +224,7 @@ export default function Dashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05, duration: 0.3 }}
-              className={`${isHero ? 'bento-col-span-4' : 'bento-col-span-3'} glass-card p-5`}
+              className={`${isHero ? 'bento-col-span-4' : 'bento-col-span-3'} matte-glass p-5`}
               style={isHero ? { 
                 boxShadow: '0 8px 32px rgba(255, 132, 73, 0.12), var(--shadow-glass)'
               } : {}}
@@ -276,14 +264,14 @@ export default function Dashboard() {
           )
         })}
 
-        {/* Service Dependency Graph - Dominant Card */}
+        {/* Service Dependency Graph - With Rounded Container */}
         <motion.div 
-          className="bento-col-span-8 glass-card p-5 relative overflow-hidden"
+          className="bento-col-span-8 matte-glass p-5 relative overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.3 }}
         >
-          <div className="graph-paper absolute inset-0 opacity-[0.03] pointer-events-none" />
+          <div className="graph-paper absolute inset-0 opacity-[0.03] pointer-events-none rounded-[var(--radius-card)]" />
           
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -293,34 +281,37 @@ export default function Dashboard() {
             <AIPulse label="AI analyzing topology" />
           </div>
           
-          <div className="h-[180px] flex items-center justify-center relative">
+          <div className="topology-container h-[180px] flex items-center justify-center relative">
             {/* Simplified service nodes */}
             <div className="flex items-center gap-8">
               {services.map((service, idx) => {
-                const isPulsing = service.status === 'critical' || service.status === 'warning'
+                const isCritical = service.status === 'critical'
+                const isWarning = service.status === 'warning'
+                const isPulsing = isCritical || isWarning
+                
                 return (
-                  <motion.div 
-                    key={idx} 
-                    className="flex flex-col items-center gap-2"
-                    animate={isPulsing ? {
-                      scale: [1, 1.08, 1],
-                      transition: { duration: 1.5, repeat: Infinity }
-                    } : {}}
-                  >
+                  <div key={idx} className="flex flex-col items-center gap-2 relative">
                     <div className="relative">
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center border" style={{
                         borderColor: service.color + '40',
-                        background: service.color + '15'
+                        background: isCritical ? service.color + '25' : service.color + '15'
                       }}>
                         <Server className="h-5 w-5" style={{ color: service.color }} />
                       </div>
-                      {isPulsing && (
-                        <div className="absolute -inset-1 rounded-xl border-2 border-[#FF8449] opacity-50 animate-ping" />
+                      {/* Static glow for critical - no pulse animation */}
+                      {isCritical && (
+                        <>
+                          <div className="absolute -inset-1 rounded-xl border-2 border-[#711A00] opacity-30" />
+                          <AlertCircle className="absolute -top-1 -right-1 h-4 w-4 text-[#711A00]" />
+                        </>
+                      )}
+                      {isWarning && !isCritical && (
+                        <div className="absolute -inset-1 rounded-xl border-2 border-[#FF8449] opacity-20" />
                       )}
                     </div>
                     <span className="text-[10px] text-[var(--text-secondary)]">{service.name}</span>
                     <div className="w-2 h-2 rounded-full" style={{ background: service.color }} />
-                  </motion.div>
+                  </div>
                 )
               })}
             </div>
@@ -334,9 +325,9 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
-        {/* Incident Heatmap - Satellite Card */}
+        {/* Incident Heatmap */}
         <motion.div 
-          className="bento-col-span-4 glass-card p-5"
+          className="bento-col-span-4 matte-glass p-5"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.3 }}
@@ -370,7 +361,7 @@ export default function Dashboard() {
 
         {/* Activity Feed */}
         <motion.div 
-          className="bento-col-span-12 glass-card p-5"
+          className="bento-col-span-12 matte-glass p-5"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.3 }}
@@ -391,7 +382,7 @@ export default function Dashboard() {
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.05 * idx, duration: 0.2 }}
-                className={`glass p-3 card-spine card-spine-${activity.severity}`}
+                className={`matte-glass p-3 card-spine card-spine-${activity.severity}`}
                 style={{ borderRadius: 'var(--radius-card)' }}
               >
                 <div className="flex items-start gap-2 mb-1.5">

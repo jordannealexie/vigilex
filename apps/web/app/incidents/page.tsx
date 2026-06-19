@@ -246,7 +246,7 @@ export default function IncidentsPage() {
                 <p className="text-sm text-[var(--text-secondary)] mt-1">{selectedIncident.description}</p>
               </div>
               <div className="flex gap-2">
-                <button className="btn-secondary text-xs py-1.5 px-3">Acknowledge</button>
+                <button className="btn-secondary text-xs py-1.5 px-3 hover:bg-[var(--glass-bg-hover)]">Acknowledge</button>
                 <button className="btn-primary text-xs py-1.5 px-3">Assign</button>
               </div>
             </div>
@@ -266,7 +266,7 @@ export default function IncidentsPage() {
               <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Timeline</h3>
               <div className="space-y-2">
                 {selectedIncident.timeline.map((event, idx) => (
-                  <div key={idx} className="flex items-start gap-3">
+                  <div key={idx} className="flex items-start gap-3 p-2 rounded-xl hover:bg-[var(--glass-bg-hover)] transition-all">
                     <div className="w-2 h-2 rounded-full mt-1.5" style={{ background: getSeverityColor(selectedIncident.severity) }} />
                     <div>
                       <div className="text-xs font-mono text-[var(--text-tertiary)]">{event.time}</div>
@@ -282,7 +282,7 @@ export default function IncidentsPage() {
               <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-2">Affected Services</h3>
               <div className="flex gap-2">
                 {selectedIncident.affectedServices.map((service, idx) => (
-                  <span key={idx} className="tag tag-info">{service}</span>
+                  <span key={idx} className="tag tag-info hover:opacity-80 cursor-default">{service}</span>
                 ))}
               </div>
             </div>
