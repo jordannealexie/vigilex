@@ -161,7 +161,229 @@
 }
 
 @layer components {
-  /* === Enhanced Glass Base === */
+  /* === Ambient Grain === */
+  .ambient-grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.02;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+  }
+
+  /* === Custom Scrollbar === */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: var(--radius-pill);
+    opacity: 0.5;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    opacity: 0.8;
+  }
+
+  /* === Status Orb === */
+  .status-orb {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+  }
+  
+  .status-orb::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    animation: orbPulse 2s ease-in-out infinite;
+  }
+  
+  .status-orb-healthy {
+    background: var(--severity-healthy);
+  }
+  
+  .status-orb-healthy::after {
+    background: var(--severity-healthy);
+    opacity: 0.3;
+    animation: orbPulse 3s ease-in-out infinite;
+  }
+  
+  .status-orb-warning {
+    background: var(--severity-warning);
+  }
+  
+  .status-orb-warning::after {
+    background: var(--severity-warning);
+    opacity: 0.4;
+    animation: orbPulse 1.5s ease-in-out infinite;
+  }
+  
+  .status-orb-critical {
+    background: var(--severity-critical);
+  }
+  
+  .status-orb-critical::after {
+    background: var(--severity-critical);
+    opacity: 0.5;
+    animation: orbPulse 0.8s ease-in-out infinite;
+  }
+  
+  @keyframes orbPulse {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(2); opacity: 0.6; }
+  }
+
+  /* === Colored Shadows === */
+  .shadow-colored-critical {
+    box-shadow: 
+      0 8px 32px rgba(113, 26, 0, 0.15),
+      var(--shadow-glass);
+  }
+  
+  .shadow-colored-warning {
+    box-shadow: 
+      0 8px 32px rgba(255, 132, 73, 0.15),
+      var(--shadow-glass);
+  }
+  
+  .shadow-colored-healthy {
+    box-shadow: 
+      0 8px 32px rgba(62, 139, 92, 0.15),
+      var(--shadow-glass);
+  }
+
+  /* === Gradient Text === */
+  .text-gradient {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* === Sticker Tag === */
+  .sticker-tag {
+    transform: rotate(-2deg);
+    display: inline-block;
+  }
+  
+  .sticker-tag-alt {
+    transform: rotate(2deg);
+    display: inline-block;
+  }
+
+  /* === Colored Spine === */
+  .card-spine {
+    position: relative;
+    padding-left: 16px;
+  }
+  
+  .card-spine::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 16px;
+    bottom: 16px;
+    width: 4px;
+    border-radius: var(--radius-pill);
+  }
+  
+  .card-spine-critical::before {
+    background: var(--severity-critical);
+  }
+  
+  .card-spine-warning::before {
+    background: var(--severity-warning);
+  }
+  
+  .card-spine-healthy::before {
+    background: var(--severity-healthy);
+  }
+  
+  .card-spine-info::before {
+    background: var(--severity-info);
+  }
+
+  /* === AI Analyzing Indicator === */
+  .ai-pulse {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .ai-pulse .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: aiPulse 1.2s ease-in-out infinite;
+  }
+  
+  .ai-pulse .dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .ai-pulse .dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  @keyframes aiPulse {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* === Lightning Bolt Motif === */
+  .lightning-watermark {
+    opacity: 0.03;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* === Bento Grid === */
+  .bento-grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(12, 1fr);
+  }
+  
+  .bento-col-span-4 { grid-column: span 4; }
+  .bento-col-span-5 { grid-column: span 5; }
+  .bento-col-span-6 { grid-column: span 6; }
+  .bento-col-span-7 { grid-column: span 7; }
+  .bento-col-span-8 { grid-column: span 8; }
+  .bento-col-span-12 { grid-column: span 12; }
+  
+  @media (max-width: 768px) {
+    .bento-col-span-4,
+    .bento-col-span-5,
+    .bento-col-span-6,
+    .bento-col-span-7,
+    .bento-col-span-8 {
+      grid-column: span 12;
+    }
+  }
+
+  /* === Graph Paper Texture === */
+  .graph-paper {
+    background-image: 
+      linear-gradient(var(--border-glass) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border-glass) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: -1px -1px;
+  }
+
+  /* === Glass Base === */
   .glass {
     background: var(--bg-glass);
     backdrop-filter: blur(var(--glass-blur));
@@ -201,7 +423,7 @@
     background: var(--bg-glass-hover);
   }
 
-  /* === Floating Sidebar - Enhanced Glass === */
+  /* === Floating Sidebar === */
   .sidebar-floating {
     background: var(--bg-glass-strong);
     backdrop-filter: blur(var(--glass-blur));
@@ -225,23 +447,11 @@
     border-radius: var(--radius-sidebar) var(--radius-sidebar) 0 0;
   }
   
-  .sidebar-floating::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-    pointer-events: none;
-    border-radius: 0 0 var(--radius-sidebar) var(--radius-sidebar);
-  }
-  
   .sidebar-floating:hover {
     box-shadow: var(--shadow-glass-hover);
   }
 
-  /* === Enhanced Glass Card === */
+  /* === Glass Card === */
   .glass-card {
     background: var(--bg-glass);
     backdrop-filter: blur(var(--glass-blur));
@@ -265,26 +475,33 @@
     border-radius: var(--radius-card) var(--radius-card) 0 0;
   }
   
-  .glass-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
-    pointer-events: none;
-    border-radius: 0 0 var(--radius-card) var(--radius-card);
-  }
-  
   .glass-card:hover {
     box-shadow: var(--shadow-glass-hover);
     background: var(--bg-glass-hover);
     transform: translateY(-1px);
   }
+
+  /* === Glass Topbar === */
+  .glass-topbar {
+    background: var(--bg-glass-strong);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-glass);
+    position: relative;
+  }
   
-  .glass-card:active {
-    transform: scale(0.99);
+  .glass-topbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
+    pointer-events: none;
+    border-radius: var(--radius-card) var(--radius-card) 0 0;
   }
 
   /* === Nav Item === */
@@ -319,32 +536,10 @@
     box-shadow: 0 0 20px rgba(255, 132, 73, 0.05);
   }
   
-  .nav-item-active:hover {
-    background: rgba(255, 132, 73, 0.20);
-    color: var(--accent);
-  }
-
-  /* === Enhanced Glass Topbar === */
-  .glass-topbar {
-    background: var(--bg-glass-strong);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--border-glass);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-glass);
-    position: relative;
-  }
-  
-  .glass-topbar::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
-    pointer-events: none;
-    border-radius: var(--radius-card) var(--radius-card) 0 0;
+  .nav-item-active::before {
+    content: '⚡';
+    font-size: 10px;
+    margin-right: -4px;
   }
 
   /* === Primary Button === */
@@ -440,7 +635,7 @@
     color: var(--text-tertiary);
   }
 
-  /* === Tag/Badge === */
+  /* === Tag === */
   .tag {
     font-size: 11px;
     font-weight: 500;
@@ -514,12 +709,14 @@
     color: white;
   }
 
-  /* === Status Dot === */
-  .status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
+  /* === Count Up Animation === */
+  @keyframes countUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .count-up {
+    animation: countUp 0.6s ease-out forwards;
   }
 
   /* === Page Transition === */
@@ -527,47 +724,8 @@
     animation: fadeSlideUp 0.2s ease-out forwards;
   }
   
-  .page-exit {
-    animation: fadeOut 0.12s ease-in forwards;
-  }
-  
   @keyframes fadeSlideUp {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-  }
-
-  /* === Chart Glow === */
-  .chart-glow {
-    filter: drop-shadow(0 0 8px rgba(255, 132, 73, 0.2));
-  }
-
-  /* === Scrollbar === */
-  ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background: var(--text-tertiary);
-    border-radius: var(--radius-pill);
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--text-secondary);
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 }

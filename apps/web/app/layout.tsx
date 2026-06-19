@@ -23,6 +23,7 @@ import {
   Menu,
   LogOut
 } from "lucide-react"
+import { StatusOrb } from "@/components/StatusOrb"
 
 const navSections = [
   {
@@ -95,10 +96,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* Background Ambient Glow */}
+        {/* Ambient Grain */}
+        <div className="ambient-grain" />
+
+        {/* Background Glow */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-[#FF8449] opacity-[0.04] rounded-full blur-[120px]"></div>
-          <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-[#0F445C] opacity-[0.04] rounded-full blur-[120px]"></div>
+          <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-[#FF8449] opacity-[0.04] rounded-full blur-[120px] animate-pulse-slow" />
+          <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-[#0F445C] opacity-[0.04] rounded-full blur-[120px] animate-pulse-slower" />
         </div>
 
         <div className="flex h-screen relative p-4 md:p-5 gap-4">
@@ -201,6 +205,14 @@ export default function RootLayout({
 
             {/* Bottom Controls */}
             <div className="border-t border-[var(--border-glass)] py-3 px-2 flex-shrink-0 space-y-1">
+              <div className="flex items-center justify-between px-3 py-2">
+                <div className="flex items-center gap-2">
+                  <StatusOrb status="healthy" />
+                  <span className="text-xs text-[var(--text-secondary)]">System Healthy</span>
+                </div>
+                <span className="text-[10px] text-[var(--text-tertiary)]">v2.0</span>
+              </div>
+              
               <button 
                 onClick={toggleTheme}
                 className="nav-item w-full"
@@ -265,6 +277,23 @@ export default function RootLayout({
             </div>
           </motion.main>
         </div>
+
+        <style jsx>{`
+          @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); opacity: 0.04; }
+            50% { transform: scale(1.1); opacity: 0.07; }
+          }
+          @keyframes pulse-slower {
+            0%, 100% { transform: scale(1); opacity: 0.04; }
+            50% { transform: scale(1.15); opacity: 0.06; }
+          }
+          .animate-pulse-slow {
+            animation: pulse-slow 8s ease-in-out infinite;
+          }
+          .animate-pulse-slower {
+            animation: pulse-slower 12s ease-in-out infinite;
+          }
+        `}</style>
       </body>
     </html>
   )

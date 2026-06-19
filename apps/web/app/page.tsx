@@ -1,6 +1,6 @@
 ﻿"use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { 
   AlertTriangle, 
@@ -11,8 +11,11 @@ import {
   Filter,
   RefreshCw,
   Search,
-  Bell,
-  Zap
+  Zap,
+  Server,
+  GitBranch,
+  Circle,
+  Calendar
 } from "lucide-react"
 import {
   LineChart,
@@ -26,6 +29,10 @@ import {
   ResponsiveContainer
 } from 'recharts'
 import { Sparkline } from "@/components/sparkline"
+import { CountUp } from "@/components/CountUp"
+import { StatusOrb } from "@/components/StatusOrb"
+import { AIPulse } from "@/components/AIPulse"
+import { LightningWatermark } from "@/components/LightningWatermark"
 
 const chartData = [
   { time: '00:00', errors: 12, requests: 340 },
@@ -39,6 +46,14 @@ const chartData = [
 
 const sparklineData = [2, 5, 3, 8, 4, 6, 3, 9, 5, 4, 7, 2, 6, 3, 8, 4, 5, 7, 3, 6]
 
+const services = [
+  { name: 'API Gateway', status: 'healthy', requests: '1.2M', errorRate: '0.2%', latency: '24ms', color: '#3E8B5C' },
+  { name: 'Auth Service', status: 'healthy', requests: '892K', errorRate: '0.8%', latency: '42ms', color: '#3E8B5C' },
+  { name: 'Payment Service', status: 'warning', requests: '543K', errorRate: '1.5%', latency: '56ms', color: '#FF8449' },
+  { name: 'Notification Service', status: 'healthy', requests: '321K', errorRate: '0.1%', latency: '18ms', color: '#3E8B5C' },
+  { name: 'Database', status: 'critical', requests: '234K', errorRate: '3.2%', latency: '89ms', color: '#711A00' },
+]
+
 const activities = [
   { 
     title: "API Gateway timeout rate exceeded 5%",
@@ -47,7 +62,8 @@ const activities = [
     tag: "INCIDENT",
     time: "14:23:45",
     source: "api-gateway",
-    linked: 3
+    linked: 3,
+    aiAnalyzed: true
   },
   { 
     title: "Auth service response time spike",
@@ -90,7 +106,7 @@ const activities = [
 const stats = [
   { 
     label: "Active Incidents", 
-    value: "3", 
+    value: 3, 
     delta: "+2 from yesterday",
     severity: "critical",
     icon: AlertTriangle,
@@ -98,27 +114,30 @@ const stats = [
   },
   { 
     label: "Error Rate", 
-    value: "1.8%", 
+    value: 1.8, 
     delta: "+0.5% from yesterday",
     severity: "warning",
     icon: Activity,
-    color: "#FF8449"
+    color: "#FF8449",
+    suffix: "%"
   },
   { 
     label: "Response Time", 
-    value: "184ms", 
+    value: 184, 
     delta: "-12ms from yesterday",
     severity: "healthy",
     icon: Clock,
-    color: "#3E8B5C"
+    color: "#3E8B5C",
+    suffix: "ms"
   },
   { 
     label: "Uptime", 
-    value: "99.97%", 
+    value: 99.97, 
     delta: "+0.02% from yesterday",
     severity: "healthy",
     icon: CheckCircle,
-    color: "#3E8B5C"
+    color: "#3E8B5C",
+    suffix: "%"
   },
 ]
 
@@ -142,17 +161,13 @@ const getTagClass = (severity: string) => {
   return classes[severity] || ''
 }
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.05,
-      duration: 0.3,
-      ease: "easeOut"
-    }
-  })
+const getStatusDotColor = (status: string) => {
+  const colors: Record<string, string> = {
+    healthy: '#3E8B5C',
+    warning: '#FF8449',
+    critical: '#711A00'
+  }
+  return colors[status] || '#6B7679'
 }
 
 export default function Dashboard() {
@@ -161,15 +176,21 @@ export default function Dashboard() {
 
   return (
     <motion.div 
-      className="p-4 md:p-6 space-y-5 page-enter"
+      className="p-4 md:p-6 space-y-5 relative"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
     >
-      {/* Topbar - Enhanced Glass */}
+      {/* Lightning Watermark */}
+      <LightningWatermark className="absolute right-10 bottom-10 opacity-[0.03]" size={160} />
+
+      {/* Topbar */}
       <div className="glass-topbar p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-4 w-full sm:w-auto">
-          <h1>Dashboard</h1>
+          <div className="flex items-center gap-2">
+            <h1>Dashboard</h1>
+            <StatusOrb status="healthy" />
+          </div>
           <div className="relative flex-1 sm:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-tertiary)]" />
             <input 
@@ -203,23 +224,35 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Bento Grid - Asymmetric Layout */}
+      <div className="bento-grid">
+        {/* Stat Cards - 4 in a row but with varied sizing */}
         {stats.map((stat, idx) => {
           const Icon = stat.icon
+          const isHero = idx === 0
           return (
             <motion.div
               key={idx}
-              custom={idx}
-              variants={cardVariants}
-              initial="hidden"
-              animate="visible"
-              className="glass-card p-5"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05, duration: 0.3 }}
+              className={`${isHero ? 'bento-col-span-4' : 'bento-col-span-3'} glass-card p-5`}
+              style={isHero ? { 
+                boxShadow: '0 8px 32px rgba(255, 132, 73, 0.12), var(--shadow-glass)'
+              } : {}}
             >
               <div className="flex items-start justify-between">
                 <div>
                   <div className="label mb-2">{stat.label}</div>
-                  <div className="text-2xl font-bold mono text-[var(--text-primary)]">{stat.value}</div>
+                  <div className="text-2xl font-bold mono text-[var(--text-primary)]">
+                    {isHero ? (
+                      <span className="text-gradient">
+                        <CountUp value={stat.value} suffix={stat.suffix || ''} />
+                      </span>
+                    ) : (
+                      <CountUp value={stat.value} suffix={stat.suffix || ''} />
+                    )}
+                  </div>
                   <div className="text-xs mt-1" style={{ color: stat.color }}>
                     {stat.delta}
                   </div>
@@ -242,117 +275,111 @@ export default function Dashboard() {
             </motion.div>
           )
         })}
-      </div>
 
-      {/* Chart + Activity Feed */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Chart */}
+        {/* Service Dependency Graph - Dominant Card */}
         <motion.div 
-          className="lg:col-span-2 glass-card p-5"
+          className="bento-col-span-8 glass-card p-5 relative overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.3 }}
         >
+          <div className="graph-paper absolute inset-0 opacity-[0.03] pointer-events-none" />
+          
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2>Error Rate & Request Volume</h2>
-              <span className="text-xs text-[var(--text-tertiary)]">Last 24 hours</span>
+              <h2>Service Topology</h2>
+              <span className="text-xs text-[var(--text-tertiary)]">Real-time dependency graph</span>
             </div>
-            <div className="flex items-center gap-3 text-xs">
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-sm" style={{ background: 'var(--accent)' }}></span>
-                <span className="text-[var(--text-secondary)]">Errors</span>
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-sm" style={{ background: '#0F445C' }}></span>
-                <span className="text-[var(--text-secondary)]">Requests</span>
-              </span>
-            </div>
+            <AIPulse label="AI analyzing topology" />
           </div>
-          <ResponsiveContainer width="100%" height={220}>
-            <AreaChart data={chartData}>
-              <defs>
-                <linearGradient id="errorGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#FF8449" stopOpacity={0.25}/>
-                  <stop offset="95%" stopColor="#FF8449" stopOpacity={0.02}/>
-                </linearGradient>
-                <linearGradient id="requestGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#0F445C" stopOpacity={0.15}/>
-                  <stop offset="95%" stopColor="#0F445C" stopOpacity={0.02}/>
-                </linearGradient>
-                <filter id="chartGlow">
-                  <feGaussianBlur stdDeviation="3" result="blur"/>
-                  <feMerge>
-                    <feMergeNode in="blur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
-              <XAxis 
-                dataKey="time" 
-                axisLine={false} 
-                tickLine={false}
-                tick={{ fill: 'var(--text-tertiary)', fontSize: 10 }}
-              />
-              <YAxis 
-                yAxisId="left"
-                axisLine={false} 
-                tickLine={false}
-                tick={{ fill: 'var(--text-tertiary)', fontSize: 10 }}
-                tickFormatter={(value) => `${value}`}
-                width={30}
-              />
-              <YAxis 
-                yAxisId="right"
-                orientation="right"
-                axisLine={false} 
-                tickLine={false}
-                tick={{ fill: 'var(--text-tertiary)', fontSize: 10 }}
-                tickFormatter={(value) => `${value}`}
-                width={30}
-              />
-              <Tooltip 
-                contentStyle={{ 
-                  background: 'var(--bg-glass)', 
-                  backdropFilter: 'blur(20px)',
-                  border: '1px solid var(--border-glass)',
-                  borderRadius: '12px',
-                  fontSize: '12px',
-                  color: 'var(--text-primary)',
-                  boxShadow: 'var(--shadow-glass)'
-                }}
-              />
-              <Area 
-                yAxisId="left"
-                type="monotone" 
-                dataKey="errors" 
-                stroke="#FF8449" 
-                strokeWidth={2.5}
-                fill="url(#errorGradient)"
-                filter="url(#chartGlow)"
-              />
-              <Area 
-                yAxisId="right"
-                type="monotone" 
-                dataKey="requests" 
-                stroke="#0F445C" 
-                strokeWidth={2}
-                fill="url(#requestGradient)"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          
+          <div className="h-[180px] flex items-center justify-center relative">
+            {/* Simplified service nodes */}
+            <div className="flex items-center gap-8">
+              {services.map((service, idx) => {
+                const isPulsing = service.status === 'critical' || service.status === 'warning'
+                return (
+                  <motion.div 
+                    key={idx} 
+                    className="flex flex-col items-center gap-2"
+                    animate={isPulsing ? {
+                      scale: [1, 1.08, 1],
+                      transition: { duration: 1.5, repeat: Infinity }
+                    } : {}}
+                  >
+                    <div className="relative">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center border" style={{
+                        borderColor: service.color + '40',
+                        background: service.color + '15'
+                      }}>
+                        <Server className="h-5 w-5" style={{ color: service.color }} />
+                      </div>
+                      {isPulsing && (
+                        <div className="absolute -inset-1 rounded-xl border-2 border-[#FF8449] opacity-50 animate-ping" />
+                      )}
+                    </div>
+                    <span className="text-[10px] text-[var(--text-secondary)]">{service.name}</span>
+                    <div className="w-2 h-2 rounded-full" style={{ background: service.color }} />
+                  </motion.div>
+                )
+              })}
+            </div>
+            {/* Connection lines */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-10">
+              <line x1="15%" y1="40%" x2="30%" y2="40%" stroke="#FF8449" strokeWidth="1" strokeDasharray="4" />
+              <line x1="30%" y1="40%" x2="45%" y2="40%" stroke="#FF8449" strokeWidth="1" strokeDasharray="4" />
+              <line x1="45%" y1="40%" x2="60%" y2="40%" stroke="#FF8449" strokeWidth="1" strokeDasharray="4" />
+              <line x1="60%" y1="40%" x2="75%" y2="40%" stroke="#FF8449" strokeWidth="1" strokeDasharray="4" />
+            </svg>
+          </div>
         </motion.div>
 
-        {/* Activity Feed */}
+        {/* Incident Heatmap - Satellite Card */}
         <motion.div 
-          className="glass-card p-5"
+          className="bento-col-span-4 glass-card p-5"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.3 }}
         >
           <div className="flex items-center justify-between mb-4">
-            <h2>Activity Feed</h2>
+            <div>
+              <h3 className="text-sm font-semibold">Incident Heatmap</h3>
+              <span className="text-xs text-[var(--text-tertiary)]">Last 30 days</span>
+            </div>
+            <Calendar className="h-4 w-4 text-[var(--text-tertiary)]" />
+          </div>
+          <div className="grid grid-cols-7 gap-1">
+            {Array.from({ length: 28 }).map((_, i) => {
+              const intensity = Math.random()
+              const color = intensity > 0.7 ? '#711A00' : 
+                           intensity > 0.4 ? '#FF8449' : 
+                           intensity > 0.1 ? '#0F445C' : '#6B7679'
+              const opacity = intensity > 0.7 ? 0.8 : 
+                             intensity > 0.4 ? 0.5 : 
+                             intensity > 0.1 ? 0.3 : 0.1
+              return (
+                <div
+                  key={i}
+                  className="aspect-square rounded-sm transition-all hover:scale-110 cursor-pointer"
+                  style={{ background: color, opacity }}
+                />
+              )
+            })}
+          </div>
+        </motion.div>
+
+        {/* Activity Feed */}
+        <motion.div 
+          className="bento-col-span-12 glass-card p-5"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25, duration: 0.3 }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2>Activity Feed</h2>
+              <span className="text-xs text-[var(--text-tertiary)]">Latest system events</span>
+            </div>
             <button className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
               View All
             </button>
@@ -364,14 +391,22 @@ export default function Dashboard() {
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.05 * idx, duration: 0.2 }}
-                className="glass p-3"
+                className={`glass p-3 card-spine card-spine-${activity.severity}`}
                 style={{ borderRadius: 'var(--radius-card)' }}
               >
                 <div className="flex items-start gap-2 mb-1.5">
                   <span className={`tag ${getTagClass(activity.severity)}`}>
                     {activity.tag}
                   </span>
-                  <span className="text-xs text-[var(--text-tertiary)] mono">{activity.time}</span>
+                  {activity.aiAnalyzed && (
+                    <span className="sticker-tag text-[10px] font-medium px-2 py-0.5 rounded" style={{
+                      background: 'var(--accent-gradient)',
+                      color: 'white'
+                    }}>
+                      AI Detected
+                    </span>
+                  )}
+                  <span className="text-xs text-[var(--text-tertiary)] mono ml-auto">{activity.time}</span>
                 </div>
                 <h3 className="text-sm font-medium text-[var(--text-primary)]">{activity.title}</h3>
                 {activity.description && (
@@ -384,9 +419,12 @@ export default function Dashboard() {
                   </span>
                   {activity.linked > 0 && (
                     <span className="flex items-center gap-1">
-                      <span className="h-3 w-3" />
+                      <GitBranch className="h-3 w-3" />
                       {activity.linked} linked
                     </span>
+                  )}
+                  {activity.aiAnalyzed && (
+                    <AIPulse label="" className="ml-auto" />
                   )}
                 </div>
               </motion.div>
