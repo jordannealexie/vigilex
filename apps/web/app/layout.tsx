@@ -20,10 +20,8 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
-  Menu,
-  LogOut
+  Menu
 } from "lucide-react"
-import { StatusOrb } from "@/components/StatusOrb"
 
 const navSections = [
   {
@@ -99,17 +97,17 @@ export default function RootLayout({
         {/* Ambient Grain */}
         <div className="ambient-grain" />
 
-        {/* Background Glow */}
+        {/* Background Glow - No pulse animation */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-[#FF8449] opacity-[0.04] rounded-full blur-[120px] animate-pulse-slow" />
-          <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-[#0F445C] opacity-[0.04] rounded-full blur-[120px] animate-pulse-slower" />
+          <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-[#FF8449] opacity-[0.04] rounded-full blur-[120px]" />
+          <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-[#0F445C] opacity-[0.04] rounded-full blur-[120px]" />
         </div>
 
         <div className="flex h-screen relative p-4 md:p-5 gap-4">
           {/* Mobile Menu Button */}
           <button
             onClick={toggleSidebar}
-            className="fixed top-4 left-4 z-50 md:hidden p-2 rounded-xl glass"
+            className="fixed top-4 left-4 z-50 md:hidden p-2 rounded-xl matte-glass"
             aria-label="Toggle menu"
           >
             <Menu className="h-5 w-5 text-[var(--text-secondary)]" />
@@ -123,10 +121,10 @@ export default function RootLayout({
             />
           )}
 
-          {/* Floating Sidebar */}
+          {/* Floating Sidebar - Matte Glass */}
           <motion.aside 
             className={`
-              fixed md:relative z-40 sidebar-floating
+              fixed md:relative z-40 sidebar-matte
               flex flex-col 
               transition-all duration-200 ease-out
               ${isSidebarOpen ? 'w-[240px]' : 'w-[64px]'}
@@ -141,7 +139,7 @@ export default function RootLayout({
             transition={{ duration: 0.2, ease: "easeOut" }}
           >
             {/* Logo */}
-            <div className="flex items-center h-14 px-4 border-b border-[var(--border-glass)] flex-shrink-0">
+            <div className="flex items-center h-14 px-4 border-b border-[var(--glass-border-top)] flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'var(--accent-gradient)' }}>
                   <Zap className="h-4 w-4 text-white" />
@@ -197,20 +195,17 @@ export default function RootLayout({
                     )
                   })}
                   {isSidebarOpen && section !== navSections[navSections.length - 1] && (
-                    <div className="h-px bg-[var(--border-glass)] mx-3 my-2" />
+                    <div className="h-px bg-[var(--glass-border-top)] mx-3 my-2" />
                   )}
                 </div>
               ))}
             </nav>
 
-            {/* Bottom Controls */}
-            <div className="border-t border-[var(--border-glass)] py-3 px-2 flex-shrink-0 space-y-1">
+            {/* Bottom Controls - No status orb */}
+            <div className="border-t border-[var(--glass-border-top)] py-3 px-2 flex-shrink-0 space-y-1">
               <div className="flex items-center justify-between px-3 py-2">
-                <div className="flex items-center gap-2">
-                  <StatusOrb status="healthy" />
-                  <span className="text-xs text-[var(--text-secondary)]">System Healthy</span>
-                </div>
-                <span className="text-[10px] text-[var(--text-tertiary)]">v2.0</span>
+                <span className="text-xs text-[var(--text-secondary)]">v2.0</span>
+                <span className="text-[10px] text-[var(--text-tertiary)]">© Vigilex</span>
               </div>
               
               <button 
@@ -277,23 +272,6 @@ export default function RootLayout({
             </div>
           </motion.main>
         </div>
-
-        <style jsx>{`
-          @keyframes pulse-slow {
-            0%, 100% { transform: scale(1); opacity: 0.04; }
-            50% { transform: scale(1.1); opacity: 0.07; }
-          }
-          @keyframes pulse-slower {
-            0%, 100% { transform: scale(1); opacity: 0.04; }
-            50% { transform: scale(1.15); opacity: 0.06; }
-          }
-          .animate-pulse-slow {
-            animation: pulse-slow 8s ease-in-out infinite;
-          }
-          .animate-pulse-slower {
-            animation: pulse-slower 12s ease-in-out infinite;
-          }
-        `}</style>
       </body>
     </html>
   )
