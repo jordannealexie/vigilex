@@ -1,41 +1,38 @@
 {
-    "name":  "vigilex",
-    "version":  "1.0.0",
-    "description":  "AI-Powered Observability and Incident Intelligence Platform",
-    "private":  true,
-    "scripts":  {
-                    "dev":  "concurrently \"pnpm --filter=web dev\" \"pnpm --filter=api dev\"",
-                    "dev:web":  "pnpm --filter=web dev",
-                    "dev:api":  "pnpm --filter=api dev",
-                    "build":  "pnpm --filter=shared build \u0026\u0026 pnpm --filter=api build \u0026\u0026 pnpm --filter=web build",
-                    "build:web":  "pnpm --filter=web build",
-                    "build:api":  "pnpm --filter=api build",
-                    "start":  "pnpm --filter=api start",
-                    "lint":  "pnpm -r lint",
-                    "type-check":  "pnpm -r type-check",
-                    "test":  "pnpm -r test",
-                    "migrate":  "pnpm --filter=api prisma migrate dev",
-                    "migrate:deploy":  "pnpm --filter=api prisma migrate deploy",
-                    "seed":  "pnpm --filter=api prisma db seed",
-                    "studio":  "pnpm --filter=api prisma studio",
-                    "generate":  "pnpm --filter=api prisma generate",
-                    "clean":  "pnpm -r exec rm -rf dist .next node_modules \u0026\u0026 rm -rf node_modules",
-                    "prepare":  "pnpm build"
-                },
-    "devDependencies":  {
-                            "@types/node":  "^20.10.0",
-                            "concurrently":  "^8.2.2",
-                            "typescript":  "^5.3.0"
-                        },
-    "engines":  {
-                    "node":  "\u003e=20.11.0",
-                    "pnpm":  "\u003e=9.0.0"
-                },
-    "packageManager":  "pnpm@9.0.0",
-    "prisma":  {
-                   "seed":  "pnpm --filter=api prisma db seed"
-               },
-    "pnpm":  {
-
-             }
+  "name": "vigilex",
+  "version": "1.0.0",
+  "description": "AI-Powered Observability and Incident Intelligence Platform",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter=web dev\" \"pnpm --filter=api dev\"",
+    "dev:web": "pnpm --filter=web dev",
+    "dev:api": "pnpm --filter=api dev",
+    "build": "pnpm --filter=shared build && pnpm --filter=api build && pnpm --filter=web build",
+    "build:web": "pnpm --filter=web build",
+    "build:api": "pnpm --filter=api build",
+    "start": "pnpm --filter=api start",
+    "lint": "pnpm -r lint",
+    "type-check": "pnpm -r type-check",
+    "test": "pnpm -r test",
+    "migrate": "pnpm --filter=api prisma migrate dev",
+    "migrate:deploy": "pnpm --filter=api prisma migrate deploy",
+    "seed": "pnpm --filter=api prisma db seed",
+    "studio": "pnpm --filter=api prisma studio",
+    "generate": "pnpm --filter=api prisma generate",
+    "clean": "pnpm -r exec rm -rf dist .next node_modules && rm -rf node_modules",
+    "prepare": "pnpm build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "concurrently": "^8.2.2",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=20.11.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "prisma": {
+    "seed": "pnpm --filter=api prisma db seed"
+  }
 }
