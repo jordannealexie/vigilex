@@ -313,9 +313,9 @@ export default function AuthPage() {
             }}
           />
 
-          {/* Glass Lightning Bolt */}
+          {/* Glass Lightning Bolt - Centered */}
           <motion.div
-            className="relative"
+            className="relative flex flex-col items-center justify-center"
             initial={{ opacity: 0, scale: 0.6 }}
             animate={{ 
               opacity: isPoweredOn ? 1 : 0,
@@ -337,6 +337,7 @@ export default function AuthPage() {
             )}
 
             <motion.div
+              className="flex flex-col items-center justify-center"
               animate={!prefersReducedMotion ? {
                 rotate: [0, 2, -1.5, 1.5, 0],
                 y: [0, -6, 3, -3, 0],
@@ -426,21 +427,21 @@ export default function AuthPage() {
                   fill="none"
                 />
               </svg>
-            </motion.div>
 
-            {/* Logo and Tagline - no card boundary */}
-            <motion.div
-              className="text-center mt-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: isPoweredOn ? 1 : 0, y: isPoweredOn ? 0 : 20 }}
-              transition={{ delay: 0.7, duration: 0.5 }}
-            >
-              <h2 className="text-4xl font-bold text-[var(--text-primary)] tracking-tight">
-                Vigilex
-              </h2>
-              <p className="text-sm text-[var(--text-secondary)] mt-2 max-w-xs mx-auto">
-                AI-powered observability, in real time
-              </p>
+              {/* Logo and Tagline - centered below bolt */}
+              <motion.div
+                className="text-center mt-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: isPoweredOn ? 1 : 0, y: isPoweredOn ? 0 : 20 }}
+                transition={{ delay: 0.7, duration: 0.5 }}
+              >
+                <h2 className="text-5xl font-bold text-[var(--text-primary)] tracking-tight">
+                  Vigilex
+                </h2>
+                <p className="text-sm text-[var(--text-secondary)] mt-2 max-w-xs mx-auto">
+                  AI-powered observability, in real time
+                </p>
+              </motion.div>
             </motion.div>
           </motion.div>
         </div>
@@ -520,7 +521,7 @@ export default function AuthPage() {
               </button>
             </div>
 
-            {/* Divider - gradient fade */}
+            {/* Divider - gradient fade with transparent background */}
             <div className="relative mb-6">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full h-px" style={{
@@ -528,7 +529,7 @@ export default function AuthPage() {
                 }} />
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-4 bg-[var(--bg-base)] dark:bg-[#1C1E21] text-[var(--text-tertiary)]">
+                <span className="px-4 bg-transparent text-[var(--text-tertiary)]">
                   or continue with email
                 </span>
               </div>
