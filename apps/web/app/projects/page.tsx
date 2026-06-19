@@ -167,7 +167,7 @@ export default function ProjectsPage() {
               {envServices.map((service, idx) => {
                 const statusColor = getStatusColor(service.status)
                 const ringColor = getRingColor(service.status)
-                const circumference = 2 * Math.PI * 28
+                const circumference = 2 * Math.PI * 32
                 const strokeDashoffset = circumference * (1 - service.uptime / 100)
                 
                 return (
@@ -176,10 +176,12 @@ export default function ProjectsPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
-                    className="matte-glass p-5 card-spine"
+                    className="matte-glass p-5 card-spine card-spine-${service.status === 'healthy' ? 'healthy' : service.status === 'warning' ? 'warning' : 'critical'}"
                     style={{ 
                       borderLeftColor: statusColor,
-                      boxShadow: `0 8px 32px ${statusColor}15, var(--shadow-glass)`
+                      boxShadow: `0 8px 32px ${statusColor}15, var(--shadow-glass)`,
+                      position: 'relative',
+                      paddingLeft: '20px'
                     }}
                   >
                     <div className="flex items-start justify-between mb-3">
@@ -198,24 +200,24 @@ export default function ProjectsPage() {
                       <ArrowUpRight className="h-4 w-4 text-[var(--text-tertiary)]" />
                     </div>
 
-                    {/* Uptime Ring */}
+                    {/* Uptime Ring - Increased size for better spacing */}
                     <div className="flex items-center justify-between">
                       <div className="relative">
-                        <svg className="w-14 h-14 -rotate-90">
+                        <svg className="w-[80px] h-[80px] -rotate-90">
                           <circle
-                            cx="28"
-                            cy="28"
-                            r="24"
+                            cx="40"
+                            cy="40"
+                            r="32"
                             stroke="var(--glass-border-top)"
-                            strokeWidth="4"
+                            strokeWidth="5"
                             fill="none"
                           />
                           <circle
-                            cx="28"
-                            cy="28"
-                            r="24"
+                            cx="40"
+                            cy="40"
+                            r="32"
                             stroke={ringColor}
-                            strokeWidth="4"
+                            strokeWidth="5"
                             fill="none"
                             strokeDasharray={circumference}
                             strokeDashoffset={strokeDashoffset}
@@ -223,7 +225,7 @@ export default function ProjectsPage() {
                           />
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-xs font-bold mono" style={{ color: ringColor }}>
+                          <span className="text-base font-bold mono" style={{ color: ringColor }}>
                             {service.uptime}%
                           </span>
                         </div>

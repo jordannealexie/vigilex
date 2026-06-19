@@ -97,7 +97,7 @@ export default function RootLayout({
         {/* Ambient Grain */}
         <div className="ambient-grain" />
 
-        {/* Background Glow - No pulse animation */}
+        {/* Background Glow */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
           <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-[#FF8449] opacity-[0.04] rounded-full blur-[120px]" />
           <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] bg-[#0F445C] opacity-[0.04] rounded-full blur-[120px]" />
@@ -121,37 +121,40 @@ export default function RootLayout({
             />
           )}
 
-          {/* Floating Sidebar - Matte Glass */}
+          {/* Floating Sidebar - No overlap */}
           <motion.aside 
             className={`
               fixed md:relative z-40 sidebar-matte
               flex flex-col 
               transition-all duration-200 ease-out
               ${isSidebarOpen ? 'w-[240px]' : 'w-[64px]'}
-              ${isMobile && !isSidebarOpen ? '-translate-x-full md:translate-x-0' : 'translate-x-0'}
+              ${isMobile && !isSidebarOpen ? '-translate-x-[280px] md:translate-x-0' : 'translate-x-0'}
               h-[calc(100vh-40px)] md:h-[calc(100vh-40px)]
               overflow-hidden
+              flex-shrink-0
             `}
             initial={false}
             animate={{
               width: isSidebarOpen ? 240 : 64,
+              x: isMobile && !isSidebarOpen ? -280 : 0,
             }}
             transition={{ duration: 0.2, ease: "easeOut" }}
           >
             {/* Logo */}
             <div className="flex items-center h-14 px-4 border-b border-[var(--glass-border-top)] flex-shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'var(--accent-gradient)' }}>
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--accent-gradient)' }}>
                   <Zap className="h-4 w-4 text-white" />
                 </div>
-                <AnimatePresence>
+                <AnimatePresence mode="wait">
                   {isSidebarOpen && (
                     <motion.span
+                      key="logo-text"
                       initial={{ opacity: 0, width: 0 }}
                       animate={{ opacity: 1, width: 'auto' }}
                       exit={{ opacity: 0, width: 0 }}
                       transition={{ duration: 0.15 }}
-                      className="text-lg font-semibold text-[var(--text-primary)] whitespace-nowrap"
+                      className="text-lg font-semibold text-[var(--text-primary)] whitespace-nowrap overflow-hidden"
                     >
                       Vigilex
                     </motion.span>
@@ -161,9 +164,9 @@ export default function RootLayout({
             </div>
 
             {/* Navigation Sections */}
-            <nav className="flex-1 overflow-y-auto py-3 px-2">
+            <nav className="flex-1 overflow-y-auto py-3 px-2 min-h-0">
               {navSections.map((section) => (
-                <div key={section.label}>
+                <div key={section.label} className="flex-shrink-0">
                   {isSidebarOpen && (
                     <div className="text-[10px] font-semibold uppercase tracking-[0.06em] text-[var(--text-tertiary)] px-3 py-2">
                       {section.label}
@@ -178,14 +181,15 @@ export default function RootLayout({
                         className={`nav-item ${active ? 'nav-item-active' : ''}`}
                       >
                         <item.icon className="h-4 w-4 flex-shrink-0" />
-                        <AnimatePresence>
+                        <AnimatePresence mode="wait">
                           {isSidebarOpen && (
                             <motion.span
+                              key={`label-${item.label}`}
                               initial={{ opacity: 0, width: 0 }}
                               animate={{ opacity: 1, width: 'auto' }}
                               exit={{ opacity: 0, width: 0 }}
                               transition={{ duration: 0.15 }}
-                              className="whitespace-nowrap"
+                              className="whitespace-nowrap overflow-hidden"
                             >
                               {item.label}
                             </motion.span>
@@ -201,7 +205,7 @@ export default function RootLayout({
               ))}
             </nav>
 
-            {/* Bottom Controls - No status orb */}
+            {/* Bottom Controls */}
             <div className="border-t border-[var(--glass-border-top)] py-3 px-2 flex-shrink-0 space-y-1">
               <div className="flex items-center justify-between px-3 py-2">
                 <span className="text-xs text-[var(--text-secondary)]">v2.0</span>
@@ -217,14 +221,15 @@ export default function RootLayout({
                 ) : (
                   <Moon className="h-4 w-4 flex-shrink-0" />
                 )}
-                <AnimatePresence>
+                <AnimatePresence mode="wait">
                   {isSidebarOpen && (
                     <motion.span
+                      key="theme-label"
                       initial={{ opacity: 0, width: 0 }}
                       animate={{ opacity: 1, width: 'auto' }}
                       exit={{ opacity: 0, width: 0 }}
                       transition={{ duration: 0.15 }}
-                      className="whitespace-nowrap"
+                      className="whitespace-nowrap overflow-hidden"
                     >
                       {isDark ? 'Light Mode' : 'Dark Mode'}
                     </motion.span>
@@ -241,14 +246,15 @@ export default function RootLayout({
                 ) : (
                   <ChevronRight className="h-4 w-4 flex-shrink-0" />
                 )}
-                <AnimatePresence>
+                <AnimatePresence mode="wait">
                   {isSidebarOpen && (
                     <motion.span
+                      key="collapse-label"
                       initial={{ opacity: 0, width: 0 }}
                       animate={{ opacity: 1, width: 'auto' }}
                       exit={{ opacity: 0, width: 0 }}
                       transition={{ duration: 0.15 }}
-                      className="whitespace-nowrap"
+                      className="whitespace-nowrap overflow-hidden"
                     >
                       Collapse
                     </motion.span>
@@ -260,7 +266,7 @@ export default function RootLayout({
 
           {/* Main Content */}
           <motion.main 
-            className="flex-1 overflow-auto bg-[var(--bg-secondary)] rounded-[var(--radius-card)] p-1"
+            className="flex-1 overflow-auto bg-[var(--bg-secondary)] rounded-[var(--radius-card)] p-1 min-w-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2 }}

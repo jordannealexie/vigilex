@@ -227,31 +227,34 @@ export default function IncidentsPage() {
 
         {/* Detail Panel - 2/3 */}
         {selectedIncident && (
-          <div className="lg:col-span-2 matte-glass p-5 max-h-[600px] overflow-y-auto">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <div className="flex items-center gap-3">
-                  <span className="text-lg font-mono text-[var(--text-primary)]">{selectedIncident.id}</span>
-                  <span className={`tag ${getTagClass(selectedIncident.severity)}`}>
-                    {selectedIncident.severity}
-                  </span>
-                  <span 
-                    className="text-sm font-medium"
-                    style={{ color: getStatusColor(selectedIncident.status) }}
-                  >
-                    {selectedIncident.status}
-                  </span>
+          <div className="lg:col-span-2 max-h-[600px] overflow-y-auto">
+            {/* API Gateway Timeout - No container, just hoverable */}
+            <div className="p-5 rounded-[var(--radius-card)] hover:bg-[var(--glass-bg-hover)] hover:shadow-[var(--shadow-glass-hover)] transition-all cursor-pointer">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg font-mono text-[var(--text-primary)]">{selectedIncident.id}</span>
+                    <span className={`tag ${getTagClass(selectedIncident.severity)}`}>
+                      {selectedIncident.severity}
+                    </span>
+                    <span 
+                      className="text-sm font-medium"
+                      style={{ color: getStatusColor(selectedIncident.status) }}
+                    >
+                      {selectedIncident.status}
+                    </span>
+                  </div>
+                  <h2 className="mt-2">{selectedIncident.title}</h2>
+                  <p className="text-sm text-[var(--text-secondary)] mt-1">{selectedIncident.description}</p>
                 </div>
-                <h2 className="mt-2">{selectedIncident.title}</h2>
-                <p className="text-sm text-[var(--text-secondary)] mt-1">{selectedIncident.description}</p>
-              </div>
-              <div className="flex gap-2">
-                <button className="btn-secondary text-xs py-1.5 px-3 hover:bg-[var(--glass-bg-hover)]">Acknowledge</button>
-                <button className="btn-primary text-xs py-1.5 px-3">Assign</button>
+                <div className="flex gap-2">
+                  <button className="btn-secondary text-xs py-1.5 px-3 hover:bg-[var(--glass-bg-hover)]">Acknowledge</button>
+                  <button className="btn-primary text-xs py-1.5 px-3">Assign</button>
+                </div>
               </div>
             </div>
 
-            {/* AI Summary */}
+            {/* AI Root Cause Analysis - With Container */}
             <div className="matte-glass p-4 mb-4" style={{ background: 'rgba(255,132,73,0.04)' }}>
               <div className="flex items-center gap-3 mb-2">
                 <Zap className="h-4 w-4 text-[var(--accent)]" />
@@ -266,7 +269,7 @@ export default function IncidentsPage() {
               <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Timeline</h3>
               <div className="space-y-2">
                 {selectedIncident.timeline.map((event, idx) => (
-                  <div key={idx} className="flex items-start gap-3 p-2 rounded-xl hover:bg-[var(--glass-bg-hover)] transition-all">
+                  <div key={idx} className="flex items-start gap-3 p-2 rounded-xl hover:bg-[var(--glass-bg-hover)] transition-all cursor-pointer">
                     <div className="w-2 h-2 rounded-full mt-1.5" style={{ background: getSeverityColor(selectedIncident.severity) }} />
                     <div>
                       <div className="text-xs font-mono text-[var(--text-tertiary)]">{event.time}</div>

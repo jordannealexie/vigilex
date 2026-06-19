@@ -136,8 +136,10 @@ export default function AnalyticsPage() {
         })}
       </div>
 
-      {/* Hero Chart - Dominant */}
-      <div className="matte-glass p-5">
+      {/* Hero Chart - No container, just hoverable */}
+      <div 
+        className="p-5 rounded-[var(--radius-card)] hover:bg-[var(--glass-bg-hover)] hover:shadow-[var(--shadow-glass-hover)] transition-all cursor-pointer"
+      >
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2>Request Volume & Error Trends</h2>
@@ -231,35 +233,6 @@ export default function AnalyticsPage() {
               </PieChart>
             </ResponsiveContainer>
           </div>
-        </div>
-      </div>
-
-      {/* Incident Heatmap - Distinct full-width strip */}
-      <div className="matte-glass p-5">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Incident Heatmap</h3>
-            <span className="text-xs text-[var(--text-tertiary)]">Last 30 days</span>
-          </div>
-          <Calendar className="h-4 w-4 text-[var(--text-tertiary)]" />
-        </div>
-        <div className="grid grid-cols-7 gap-1 max-w-2xl">
-          {Array.from({ length: 28 }).map((_, i) => {
-            const intensity = Math.random()
-            const color = intensity > 0.7 ? '#711A00' : 
-                         intensity > 0.4 ? '#FF8449' : 
-                         intensity > 0.1 ? '#0F445C' : '#6B7679'
-            const opacity = intensity > 0.7 ? 0.8 : 
-                           intensity > 0.4 ? 0.5 : 
-                           intensity > 0.1 ? 0.3 : 0.1
-            return (
-              <div
-                key={i}
-                className="aspect-square rounded-sm transition-all hover:scale-110 cursor-pointer"
-                style={{ background: color, opacity }}
-              />
-            )
-          })}
         </div>
       </div>
     </motion.div>

@@ -214,32 +214,65 @@ export default function Dashboard() {
 
       {/* Bento Grid - Asymmetric Layout */}
       <div className="bento-grid">
-        {/* Stat Cards */}
+        {/* Stat Cards - All hoverable without container for 3 of them */}
         {stats.map((stat, idx) => {
           const Icon = stat.icon
           const isHero = idx === 0
-          return (
+          // Only Active Incidents has container (idx === 0)
+          const hasContainer = idx === 0
+          
+          return hasContainer ? (
             <motion.div
               key={idx}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05, duration: 0.3 }}
-              className={`${isHero ? 'bento-col-span-4' : 'bento-col-span-3'} matte-glass p-5`}
-              style={isHero ? { 
+              className="bento-col-span-4 matte-glass p-5"
+              style={{ 
                 boxShadow: '0 8px 32px rgba(255, 132, 73, 0.12), var(--shadow-glass)'
-              } : {}}
+              }}
             >
               <div className="flex items-start justify-between">
                 <div>
                   <div className="label mb-2">{stat.label}</div>
                   <div className="text-2xl font-bold mono text-[var(--text-primary)]">
-                    {isHero ? (
-                      <span className="text-gradient">
-                        <CountUp value={stat.value} suffix={stat.suffix || ''} />
-                      </span>
-                    ) : (
+                    <span className="text-gradient">
                       <CountUp value={stat.value} suffix={stat.suffix || ''} />
-                    )}
+                    </span>
+                  </div>
+                  <div className="text-xs mt-1" style={{ color: stat.color }}>
+                    {stat.delta}
+                  </div>
+                </div>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ 
+                  background: stat.color + '15',
+                  border: '1px solid ' + stat.color + '20'
+                }}>
+                  <Icon className="h-4 w-4" style={{ color: stat.color }} />
+                </div>
+              </div>
+              <div className="mt-3">
+                <Sparkline 
+                  data={sparklineData.slice(idx * 4, idx * 4 + 8)} 
+                  color={stat.color}
+                  height={32}
+                  width={64}
+                />
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05, duration: 0.3 }}
+              className="bento-col-span-3 p-5 rounded-[var(--radius-card)] hover:bg-[var(--glass-bg-hover)] hover:shadow-[var(--shadow-glass-hover)] transition-all cursor-pointer"
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="label mb-2">{stat.label}</div>
+                  <div className="text-2xl font-bold mono text-[var(--text-primary)]">
+                    <CountUp value={stat.value} suffix={stat.suffix || ''} />
                   </div>
                   <div className="text-xs mt-1" style={{ color: stat.color }}>
                     {stat.delta}
@@ -264,7 +297,7 @@ export default function Dashboard() {
           )
         })}
 
-        {/* Service Dependency Graph - With Rounded Container */}
+        {/* Service Dependency Graph - With Container */}
         <motion.div 
           className="bento-col-span-8 matte-glass p-5 relative overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
@@ -287,7 +320,6 @@ export default function Dashboard() {
               {services.map((service, idx) => {
                 const isCritical = service.status === 'critical'
                 const isWarning = service.status === 'warning'
-                const isPulsing = isCritical || isWarning
                 
                 return (
                   <div key={idx} className="flex flex-col items-center gap-2 relative">
@@ -325,9 +357,9 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
-        {/* Incident Heatmap */}
+        {/* Incident Heatmap - No container, just hoverable */}
         <motion.div 
-          className="bento-col-span-4 matte-glass p-5"
+          className="bento-col-span-4 p-5 rounded-[var(--radius-card)] hover:bg-[var(--glass-bg-hover)] hover:shadow-[var(--shadow-glass-hover)] transition-all cursor-pointer"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.3 }}
