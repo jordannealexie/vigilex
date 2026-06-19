@@ -1,6 +1,7 @@
 ﻿"use client"
 
 import { useState } from "react"
+import { motion } from "framer-motion"
 import { 
   BarChart3, 
   TrendingUp, 
@@ -53,36 +54,44 @@ const severityData = [
   { name: 'Info', value: 4 },
 ]
 
-const COLORS = ['var(--severity-critical)', 'var(--severity-warning)', 'var(--severity-info)']
+const COLORS = ['#711A00', '#FF8449', '#0F445C']
 
 export default function AnalyticsPage() {
   const [timeRange, setTimeRange] = useState('7d')
 
+  const metrics = [
+    { label: 'Total Requests', value: '2.4M', change: '+12%', icon: BarChart3, color: '#FF8449' },
+    { label: 'Active Users', value: '1,847', change: '+8%', icon: Users, color: '#0F445C' },
+    { label: 'Avg Response Time', value: '124ms', change: '-5%', icon: Clock, color: '#3E8B5C' },
+    { label: 'Error Rate', value: '1.2%', change: '-0.3%', icon: Activity, color: '#711A00' },
+  ]
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <motion.div 
+      className="p-4 md:p-6 space-y-5"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      {/* Topbar */}
+      <div className="glass-card p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold text-[var(--text-primary)]">Analytics</h1>
+          <h1>Analytics</h1>
           <p className="text-sm text-[var(--text-secondary)]">System performance and usage insights</p>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="flex bg-[var(--bg-panel)] border border-[var(--border-hairline)] rounded-md overflow-hidden">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="segmented-control">
             {['24h', '7d', '30d'].map((range) => (
               <button
                 key={range}
                 onClick={() => setTimeRange(range)}
-                className={`px-3 py-1 text-xs font-medium transition-colors ${
-                  timeRange === range 
-                    ? 'bg-[var(--accent-amber)] text-white' 
-                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                }`}
+                className={`segmented-item ${timeRange === range ? 'segmented-item-active' : ''}`}
               >
                 {range}
               </button>
             ))}
           </div>
-          <button className="btn-secondary text-xs py-1.5">
+          <button className="btn-secondary text-xs py-1.5 px-3">
             <Download className="h-3 w-3" />
             Export
           </button>
@@ -90,34 +99,34 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Metrics */}
-      <div className="grid grid-cols-4 gap-4">
-        {[
-          { label: 'Total Requests', value: '2.4M', change: '+12%', icon: BarChart3 },
-          { label: 'Active Users', value: '1,847', change: '+8%', icon: Users },
-          { label: 'Avg Response Time', value: '124ms', change: '-5%', icon: Clock },
-          { label: 'Error Rate', value: '1.2%', change: '-0.3%', icon: Activity },
-        ].map((metric, idx) => (
-          <div key={idx} className="bg-[var(--bg-panel)] border border-[var(--border-hairline)] rounded-lg p-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-[var(--text-secondary)]">{metric.label}</span>
-              <metric.icon className="h-4 w-4 text-[var(--text-tertiary)]" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {metrics.map((metric, idx) => {
+          const Icon = metric.icon
+          return (
+            <div key={idx} className="glass-card p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="label">{metric.label}</span>
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ 
+                  background: metric.color + '15',
+                  border: '1px solid ' + metric.color + '20'
+                }}>
+                  <Icon className="h-4 w-4" style={{ color: metric.color }} />
+                </div>
+              </div>
+              <div className="flex items-end justify-between">
+                <span className="text-2xl font-bold mono text-[var(--text-primary)]">{metric.value}</span>
+                <span className={`text-xs mono ${metric.change.startsWith('+') ? 'text-[#711A00]' : 'text-[#3E8B5C]'}`}>
+                  {metric.change}
+                </span>
+              </div>
             </div>
-            <div className="flex items-end justify-between">
-              <span className="text-2xl font-bold mono text-[var(--text-primary)]">{metric.value}</span>
-              <span className={`text-xs mono ${
-                metric.change.startsWith('+') ? 'text-[var(--severity-critical)]' : 'text-[var(--severity-healthy)]'
-              }`}>
-                {metric.change}
-              </span>
-            </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {/* Charts Grid */}
       <div className="grid gap-4 md:grid-cols-2">
-        {/* Request Volume */}
-        <div className="bg-[var(--bg-panel)] border border-[var(--border-hairline)] rounded-lg p-4">
+        <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-sm font-semibold text-[var(--text-primary)]">Request Volume</h3>
@@ -128,21 +137,28 @@ export default function AnalyticsPage() {
             <AreaChart data={requestData}>
               <defs>
                 <linearGradient id="requestVolGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#4FD1C5" stopOpacity={0.2}/>
-                  <stop offset="95%" stopColor="#4FD1C5" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#FF8449" stopOpacity={0.2}/>
+                  <stop offset="95%" stopColor="#FF8449" stopOpacity={0.02}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-hairline)" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-glass)" vertical={false} />
               <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{ fill: 'var(--text-tertiary)', fontSize: 10 }} />
               <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--text-tertiary)', fontSize: 10 }} width={30} />
-              <Tooltip contentStyle={{ background: 'var(--bg-panel)', border: '1px solid var(--border-hairline)', borderRadius: '6px', fontSize: '12px' }} />
-              <Area type="monotone" dataKey="requests" stroke="#4FD1C5" strokeWidth={2} fill="url(#requestVolGradient)" />
+              <Tooltip contentStyle={{ 
+                background: 'var(--bg-glass)', 
+                backdropFilter: 'blur(20px)',
+                border: '1px solid var(--border-glass)',
+                borderRadius: '12px',
+                fontSize: '12px',
+                color: 'var(--text-primary)',
+                boxShadow: 'var(--shadow-glass)'
+              }} />
+              <Area type="monotone" dataKey="requests" stroke="#FF8449" strokeWidth={2.5} fill="url(#requestVolGradient)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Error Distribution */}
-        <div className="bg-[var(--bg-panel)] border border-[var(--border-hairline)] rounded-lg p-4">
+        <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-sm font-semibold text-[var(--text-primary)]">Error Distribution</h3>
@@ -165,7 +181,15 @@ export default function AnalyticsPage() {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip contentStyle={{ background: 'var(--bg-panel)', border: '1px solid var(--border-hairline)', borderRadius: '6px', fontSize: '12px' }} />
+                <Tooltip contentStyle={{ 
+                  background: 'var(--bg-glass)', 
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid var(--border-glass)',
+                  borderRadius: '12px',
+                  fontSize: '12px',
+                  color: 'var(--text-primary)',
+                  boxShadow: 'var(--shadow-glass)'
+                }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -173,7 +197,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Top Endpoints */}
-      <div className="bg-[var(--bg-panel)] border border-[var(--border-hairline)] rounded-lg p-4">
+      <div className="glass-card p-5">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-sm font-semibold text-[var(--text-primary)]">Top Endpoints</h3>
@@ -182,7 +206,7 @@ export default function AnalyticsPage() {
         </div>
         <div className="space-y-2">
           {endpointData.map((endpoint, idx) => (
-            <div key={idx} className="flex items-center justify-between py-2 border-b border-[var(--border-hairline)] last:border-0">
+            <div key={idx} className="flex items-center justify-between py-2 border-b border-[var(--border-glass)] last:border-0">
               <div className="flex items-center gap-3">
                 <span className="text-xs font-mono text-[var(--text-tertiary)]">#{idx + 1}</span>
                 <span className="text-sm text-[var(--text-primary)]">{endpoint.name}</span>
@@ -190,7 +214,7 @@ export default function AnalyticsPage() {
               <div className="flex items-center gap-6 text-xs">
                 <span className="text-[var(--text-secondary)]">{endpoint.requests.toLocaleString()}</span>
                 <span className="text-[var(--text-secondary)]">{endpoint.latency}ms</span>
-                <span className={`${endpoint.errors > 1 ? 'text-[var(--severity-critical)]' : 'text-[var(--severity-healthy)]'}`}>
+                <span className={endpoint.errors > 1 ? 'text-[#711A00]' : 'text-[#3E8B5C]'}>
                   {endpoint.errors}%
                 </span>
               </div>
@@ -198,6 +222,6 @@ export default function AnalyticsPage() {
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
