@@ -1,0 +1,10 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "cd ../.. && pnpm build --filter=web",
+  "installCommand": "pnpm install",
+  "outputDirectory": "apps/web/.next",
+  "env": {
+    "NEXT_PUBLIC_API_URL": "@api_url",
+    "NEXT_PUBLIC_WS_URL": "@ws_url"
+  }
+}
