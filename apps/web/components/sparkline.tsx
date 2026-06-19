@@ -8,9 +8,9 @@ interface SparklineProps {
   color: string
   height?: number
   width?: number
+  animate?: boolean
 }
 
-// Helper to convert hex to rgba
 const hexToRgba = (hex: string, alpha: number) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
   if (!result) return hex
@@ -20,7 +20,7 @@ const hexToRgba = (hex: string, alpha: number) => {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }
 
-export function Sparkline({ data, color, height = 24, width = 60 }: SparklineProps) {
+export function Sparkline({ data, color, height = 24, width = 60, animate = true }: SparklineProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [isVisible, setIsVisible] = useState(false)
 
@@ -42,7 +42,7 @@ export function Sparkline({ data, color, height = 24, width = 60 }: SparklinePro
     canvas.style.height = `${height}px`
     ctx.scale(dpr, dpr)
 
-    const animate = () => {
+    const draw = () => {
       ctx.clearRect(0, 0, width, height)
 
       const max = Math.max(...data)
@@ -50,13 +50,9 @@ export function Sparkline({ data, color, height = 24, width = 60 }: SparklinePro
       const range = max - min || 1
       const padding = 2
 
-      // Get rgba versions of the color
-      const colorRgba = hexToRgba(color, 0.3)
-      const colorRgbaLight = hexToRgba(color, 0.05)
-
       // Draw glow line
       ctx.beginPath()
-      ctx.strokeStyle = colorRgba
+      ctx.strokeStyle = hexToRgba(color, 0.3)
       ctx.lineWidth = 4
       ctx.lineCap = 'round'
       ctx.lineJoin = 'round'
@@ -103,8 +99,8 @@ export function Sparkline({ data, color, height = 24, width = 60 }: SparklinePro
       ctx.closePath()
       
       const gradient = ctx.createLinearGradient(0, 0, 0, height)
-      gradient.addColorStop(0, colorRgba)
-      gradient.addColorStop(1, colorRgbaLight)
+      gradient.addColorStop(0, hexToRgba(color, 0.3))
+      gradient.addColorStop(1, hexToRgba(color, 0.05))
       ctx.fillStyle = gradient
       ctx.fill()
 
@@ -123,7 +119,7 @@ export function Sparkline({ data, color, height = 24, width = 60 }: SparklinePro
       ctx.fill()
     }
 
-    animate()
+    draw()
   }, [data, color, height, width, isVisible])
 
   return (

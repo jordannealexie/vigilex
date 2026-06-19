@@ -214,65 +214,32 @@ export default function Dashboard() {
 
       {/* Bento Grid - Asymmetric Layout */}
       <div className="bento-grid">
-        {/* Stat Cards - All hoverable without container for 3 of them */}
+        {/* Stat Cards */}
         {stats.map((stat, idx) => {
           const Icon = stat.icon
           const isHero = idx === 0
-          // Only Active Incidents has container (idx === 0)
-          const hasContainer = idx === 0
-          
-          return hasContainer ? (
+          return (
             <motion.div
               key={idx}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05, duration: 0.3 }}
-              className="bento-col-span-4 matte-glass p-5"
-              style={{ 
+              className={`${isHero ? 'bento-col-span-4' : 'bento-col-span-3'} matte-glass p-5`}
+              style={isHero ? { 
                 boxShadow: '0 8px 32px rgba(255, 132, 73, 0.12), var(--shadow-glass)'
-              }}
+              } : {}}
             >
               <div className="flex items-start justify-between">
                 <div>
                   <div className="label mb-2">{stat.label}</div>
                   <div className="text-2xl font-bold mono text-[var(--text-primary)]">
-                    <span className="text-gradient">
+                    {isHero ? (
+                      <span className="text-gradient">
+                        <CountUp value={stat.value} suffix={stat.suffix || ''} />
+                      </span>
+                    ) : (
                       <CountUp value={stat.value} suffix={stat.suffix || ''} />
-                    </span>
-                  </div>
-                  <div className="text-xs mt-1" style={{ color: stat.color }}>
-                    {stat.delta}
-                  </div>
-                </div>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ 
-                  background: stat.color + '15',
-                  border: '1px solid ' + stat.color + '20'
-                }}>
-                  <Icon className="h-4 w-4" style={{ color: stat.color }} />
-                </div>
-              </div>
-              <div className="mt-3">
-                <Sparkline 
-                  data={sparklineData.slice(idx * 4, idx * 4 + 8)} 
-                  color={stat.color}
-                  height={32}
-                  width={64}
-                />
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.05, duration: 0.3 }}
-              className="bento-col-span-3 p-5 rounded-[var(--radius-card)] hover:bg-[var(--glass-bg-hover)] hover:shadow-[var(--shadow-glass-hover)] transition-all cursor-pointer"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="label mb-2">{stat.label}</div>
-                  <div className="text-2xl font-bold mono text-[var(--text-primary)]">
-                    <CountUp value={stat.value} suffix={stat.suffix || ''} />
+                    )}
                   </div>
                   <div className="text-xs mt-1" style={{ color: stat.color }}>
                     {stat.delta}
@@ -315,7 +282,6 @@ export default function Dashboard() {
           </div>
           
           <div className="topology-container h-[180px] flex items-center justify-center relative">
-            {/* Simplified service nodes */}
             <div className="flex items-center gap-8">
               {services.map((service, idx) => {
                 const isCritical = service.status === 'critical'
@@ -330,7 +296,6 @@ export default function Dashboard() {
                       }}>
                         <Server className="h-5 w-5" style={{ color: service.color }} />
                       </div>
-                      {/* Static glow for critical - no pulse animation */}
                       {isCritical && (
                         <>
                           <div className="absolute -inset-1 rounded-xl border-2 border-[#711A00] opacity-30" />
@@ -347,7 +312,6 @@ export default function Dashboard() {
                 )
               })}
             </div>
-            {/* Connection lines */}
             <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-10">
               <line x1="15%" y1="40%" x2="30%" y2="40%" stroke="#FF8449" strokeWidth="1" strokeDasharray="4" />
               <line x1="30%" y1="40%" x2="45%" y2="40%" stroke="#FF8449" strokeWidth="1" strokeDasharray="4" />

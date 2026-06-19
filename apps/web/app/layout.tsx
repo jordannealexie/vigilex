@@ -4,7 +4,7 @@ import "./globals.css"
 import "@fontsource/inter"
 import "@fontsource/jetbrains-mono"
 import { useState, useEffect } from "react"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
@@ -20,7 +20,8 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
-  Menu
+  Menu,
+  LogOut
 } from "lucide-react"
 
 const navSections = [
@@ -49,9 +50,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const router = useRouter()
   const [isDark, setIsDark] = useState(true)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
+  const isAuthPage = pathname === '/auth' || pathname === '/login' || pathname === '/signup'
 
   useEffect(() => {
     document.documentElement.classList.add('dark')
@@ -86,9 +89,26 @@ export default function RootLayout({
     setIsSidebarOpen(!isSidebarOpen)
   }
 
+  const handleLogout = () => {
+    // Clear auth state and redirect to login
+    localStorage.removeItem('auth-storage')
+    router.push('/auth')
+  }
+
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/'
     return pathname.startsWith(href)
+  }
+
+  // If auth page, render without sidebar
+  if (isAuthPage) {
+    return (
+      <html lang="en">
+        <body>
+          {children}
+        </body>
+      </html>
+    )
   }
 
   return (
@@ -121,7 +141,7 @@ export default function RootLayout({
             />
           )}
 
-          {/* Floating Sidebar - No overlap */}
+          {/* Floating Sidebar */}
           <motion.aside 
             className={`
               fixed md:relative z-40 sidebar-matte
@@ -232,6 +252,28 @@ export default function RootLayout({
                       className="whitespace-nowrap overflow-hidden"
                     >
                       {isDark ? 'Light Mode' : 'Dark Mode'}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </button>
+              
+              {/* Logout Button */}
+              <button 
+                onClick={handleLogout}
+                className="nav-item w-full text-[var(--severity-critical)] hover:text-[var(--severity-critical)] hover:bg-[var(--severity-critical)]/10"
+              >
+                <LogOut className="h-4 w-4 flex-shrink-0" />
+                <AnimatePresence mode="wait">
+                  {isSidebarOpen && (
+                    <motion.span
+                      key="logout-label"
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: 'auto' }}
+                      exit={{ opacity: 0, width: 0 }}
+                      transition={{ duration: 0.15 }}
+                      className="whitespace-nowrap overflow-hidden"
+                    >
+                      Logout
                     </motion.span>
                   )}
                 </AnimatePresence>

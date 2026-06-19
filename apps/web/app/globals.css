@@ -24,7 +24,7 @@
     
     /* Matte Liquid Glass - Light */
     --glass-bg: rgba(255, 255, 255, 0.55);
-    --glass-bg-hover: rgba(255, 255, 255, 0.75);
+    --glass-bg-hover: rgba(255, 255, 255, 0.85);
     --glass-bg-strong: rgba(255, 255, 255, 0.85);
     --glass-blur: 24px;
     --glass-saturation: 140%;
@@ -35,7 +35,7 @@
     --glass-inset-shadow-dark: inset 0 1px 2px rgba(15, 23, 28, 0.04);
     
     --shadow-glass: 0 8px 32px rgba(15, 23, 28, 0.10);
-    --shadow-glass-hover: 0 12px 48px rgba(15, 23, 28, 0.18);
+    --shadow-glass-hover: 0 12px 48px rgba(15, 23, 28, 0.25);
     
     --text-primary: var(--satin-black);
     --text-secondary: var(--sailor-blue);
@@ -51,7 +51,7 @@
     --severity-info: var(--sailor-blue);
     --severity-healthy: var(--healthy-green);
     
-    /* === Radius Tokens - All Rounded === */
+    /* === Radius Tokens === */
     --radius-tag: 8px;
     --radius-input: 12px;
     --radius-card: 16px;
@@ -80,7 +80,7 @@
     
     /* Matte Liquid Glass - Dark */
     --glass-bg: rgba(255, 255, 255, 0.06);
-    --glass-bg-hover: rgba(255, 255, 255, 0.12);
+    --glass-bg-hover: rgba(255, 255, 255, 0.15);
     --glass-bg-strong: rgba(255, 255, 255, 0.10);
     --glass-blur: 24px;
     --glass-saturation: 140%;
@@ -91,7 +91,7 @@
     --glass-inset-shadow-dark: inset 0 1px 2px rgba(0, 0, 0, 0.20);
     
     --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.50);
-    --shadow-glass-hover: 0 12px 48px rgba(0, 0, 0, 0.70);
+    --shadow-glass-hover: 0 12px 48px rgba(0, 0, 0, 0.75);
     
     --text-primary: var(--carrara);
     --text-secondary: var(--tempered-grey);
@@ -171,7 +171,7 @@
 }
 
 @layer components {
-  /* === Matte Liquid Glass - All Rounded === */
+  /* === Matte Liquid Glass === */
   .matte-glass {
     background: var(--glass-bg);
     backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
@@ -211,6 +211,7 @@
     box-shadow: var(--shadow-glass-hover), var(--glass-inset-shadow);
     backdrop-filter: blur(28px) saturate(150%);
     -webkit-backdrop-filter: blur(28px) saturate(150%);
+    transform: translateY(-2px);
   }
 
   /* === Matte Glass Strong === */
@@ -251,6 +252,7 @@
   .matte-glass-strong:hover {
     background: var(--glass-bg-hover);
     box-shadow: var(--shadow-glass-hover), var(--glass-inset-shadow);
+    transform: translateY(-2px);
   }
 
   /* === Sidebar === */
@@ -314,7 +316,7 @@
     opacity: 0.8;
   }
 
-  /* === Nav Item - Hover works in both modes === */
+  /* === Nav Item - No lightning icon === */
   .nav-item {
     display: flex;
     align-items: center;
@@ -334,6 +336,7 @@
     background: var(--glass-bg-hover);
     color: var(--text-primary);
     transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
   
   .nav-item:active {
@@ -341,15 +344,15 @@
   }
   
   .nav-item-active {
-    background: rgba(255, 132, 73, 0.12);
+    background: rgba(255, 132, 73, 0.15);
     color: var(--accent);
-    box-shadow: 0 0 20px rgba(255, 132, 73, 0.04);
+    box-shadow: 0 0 20px rgba(255, 132, 73, 0.08);
   }
   
-  .nav-item-active::before {
-    content: '⚡';
-    font-size: 10px;
-    margin-right: -4px;
+  .nav-item-active:hover {
+    background: rgba(255, 132, 73, 0.22);
+    color: var(--accent);
+    box-shadow: 0 0 30px rgba(255, 132, 73, 0.12);
   }
 
   /* === Primary Button === */
@@ -385,7 +388,7 @@
   
   .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(255, 132, 73, 0.4);
+    box-shadow: 0 8px 24px rgba(255, 132, 73, 0.5);
   }
   
   .btn-primary:active {
@@ -414,6 +417,7 @@
     background: var(--glass-bg-hover);
     color: var(--text-primary);
     transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
   
   .btn-secondary:active {
@@ -437,6 +441,8 @@
   
   .glass-input:hover {
     background: var(--glass-bg-hover);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(255, 132, 73, 0.05);
   }
   
   .glass-input:focus {
@@ -460,11 +466,13 @@
     font-family: 'Inter', sans-serif;
     border: 1px solid currentColor;
     background: rgba(255, 255, 255, 0.04);
+    transition: all 0.15s ease-out;
   }
   
   .tag:hover {
     opacity: 0.8;
-    transform: translateY(-1px);
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
   
   .tag-critical {
@@ -517,6 +525,8 @@
   .segmented-item:hover {
     color: var(--text-primary);
     background: var(--glass-bg-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   }
   
   .segmented-item-active {
@@ -527,6 +537,7 @@
   
   .segmented-item-active:hover {
     color: white;
+    transform: translateY(-1px);
   }
 
   /* === Colored Spine === */
@@ -589,7 +600,7 @@
     50% { opacity: 1; transform: scale(1.2); }
   }
 
-  /* === Lightning Bolt Motif === */
+  /* === Lightning Bolt Motif - Only for watermark === */
   .lightning-watermark {
     opacity: 0.03;
     pointer-events: none;
@@ -643,12 +654,13 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* === Hover Effects for All Clickable Elements === */
+  /* === Hover Effects for All Clickable Elements - Enhanced === */
   button:not(.no-hover):hover,
   a:not(.no-hover):hover,
   .clickable:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
     transition: all 0.15s ease-out;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
   }
   
   button:not(.no-hover):active,
@@ -657,10 +669,72 @@
     transform: scale(0.97);
   }
 
-  /* === Rounded Container for Topology === */
-  .topology-container {
+  /* === Hoverable Container (no glass background) === */
+  .hoverable {
+    transition: all 0.15s ease-out;
     border-radius: var(--radius-card);
-    overflow: hidden;
-    position: relative;
   }
+  
+  .hoverable:hover {
+    background: var(--glass-bg-hover);
+    box-shadow: var(--shadow-glass-hover);
+    transform: translateY(-2px);
+  }
+}
+/* Add to existing globals.css */
+.glow-pulse {
+  animation: glowPulse 0.6s ease-out;
+}
+
+@keyframes glowPulse {
+  0% {
+    text-shadow: 0 0 0 rgba(255, 132, 73, 0);
+  }
+  30% {
+    text-shadow: 0 0 20px rgba(255, 132, 73, 0.4);
+  }
+  100% {
+    text-shadow: 0 0 0 rgba(255, 132, 73, 0);
+  }
+}
+
+/* Ambient drift animation */
+@keyframes drift {
+  0% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(5%, -5%) scale(1.05); }
+  50% { transform: translate(-3%, 8%) scale(0.95); }
+  75% { transform: translate(7%, 3%) scale(1.02); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+.ambient-drift {
+  animation: drift 20s ease-in-out infinite;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .ambient-drift {
+    animation: none;
+  }
+  .glow-pulse {
+    animation: none;
+  }
+  [data-motion="reduce"] {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+/* Add any missing styles for the auth page */
+.shadow-\[var\(--accent\)\]\/20 {
+  box-shadow: 0 0 20px rgba(255, 132, 73, 0.2);
+}
+
+/* Ensure the auth page uses the full viewport */
+.min-h-screen {
+  min-height: 100vh;
+}
+
+/* Smooth transitions for auth page */
+.auth-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
