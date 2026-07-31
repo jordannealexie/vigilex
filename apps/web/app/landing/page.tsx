@@ -1,116 +1,265 @@
 ﻿"use client"
 
 import Link from "next/link"
+import { useState, useEffect } from "react"
 
 export default function LandingPage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
-    <div className="min-h-screen w-full bg-[#EDE3D8] dark:bg-[#1C1E21] flex flex-col items-center justify-center px-4">
-      <div className="max-w-4xl mx-auto text-center">
-        {/* Logo */}
-        <div className="flex justify-center mb-6">
-          <div className="w-20 h-20 rounded-2xl flex items-center justify-center bg-gradient-to-br from-[#FF8449] to-[#711A00] text-white text-4xl font-bold">
-            ⚡
-          </div>
-        </div>
-
-        <h1 className="text-4xl md:text-6xl font-bold text-[#1C1E21] dark:text-[#EEEBE4] tracking-tight mb-4">
-          AI-Powered Observability
-          <br />
-          <span className="text-[#FF8449]">in Real Time</span>
-        </h1>
-
-        <p className="text-lg md:text-xl text-[#5B6470] dark:text-[#A1AEB1] max-w-2xl mx-auto mb-8">
-          Monitor, analyze, and respond to incidents faster with AI-driven insights.
-          Built for modern engineering teams.
-        </p>
-
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            href="/auth"
-            className="px-8 py-3 bg-gradient-to-br from-[#FF8449] to-[#711A00] text-white rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-          >
-            Get Started
-            <span>→</span>
-          </Link>
-          <Link
-            href="#features"
-            className="px-8 py-3 border border-[#DCCFBE] dark:border-[#27272A] rounded-lg text-[#1C1E21] dark:text-[#EEEBE4] hover:bg-white/10 transition-colors"
-          >
-            Learn More
-          </Link>
-        </div>
-
-        {/* OAuth Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">
-          <button className="px-5 py-2 border border-[#DCCFBE] dark:border-[#27272A] rounded-lg text-sm text-[#1C1E21] dark:text-[#EEEBE4] flex items-center justify-center gap-2 hover:bg-white/10 transition-colors">
-            <span>GitHub</span>
-          </button>
-          <button className="px-5 py-2 border border-[#DCCFBE] dark:border-[#27272A] rounded-lg text-sm text-[#1C1E21] dark:text-[#EEEBE4] flex items-center justify-center gap-2 hover:bg-white/10 transition-colors">
-            <span>Google</span>
-          </button>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
-          <div>
-            <div className="text-3xl font-mono font-bold text-[#1C1E21] dark:text-[#EEEBE4]">99.97%</div>
-            <div className="text-sm text-[#5B6470] dark:text-[#A1AEB1]">Uptime</div>
-          </div>
-          <div>
-            <div className="text-3xl font-mono font-bold text-[#1C1E21] dark:text-[#EEEBE4]">&lt; 5s</div>
-            <div className="text-sm text-[#5B6470] dark:text-[#A1AEB1]">MTTD</div>
-          </div>
-          <div>
-            <div className="text-3xl font-mono font-bold text-[#1C1E21] dark:text-[#EEEBE4]">3x</div>
-            <div className="text-sm text-[#5B6470] dark:text-[#A1AEB1]">Faster Resolution</div>
-          </div>
-          <div>
-            <div className="text-3xl font-mono font-bold text-[#1C1E21] dark:text-[#EEEBE4]">100+</div>
-            <div className="text-sm text-[#5B6470] dark:text-[#A1AEB1]">Integrations</div>
-          </div>
-        </div>
-
-        {/* Features */}
-        <div id="features" className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-20">
-          {[
-            { title: "Real-time Monitoring", desc: "Live metrics and logs with automatic anomaly detection." },
-            { title: "AI-Powered Analysis", desc: "Root cause analysis powered by GPT-4o." },
-            { title: "Incident Management", desc: "Track and resolve incidents faster with AI assistance." },
-            { title: "Service Topology", desc: "Visual dependency mapping with live traffic flow." }
-          ].map((feature, i) => (
-            <div key={i} className="p-6 rounded-xl bg-white/10 dark:bg-white/5 backdrop-blur-sm border border-white/20 dark:border-white/10">
-              <h3 className="text-lg font-semibold text-[#1C1E21] dark:text-[#EEEBE4]">{feature.title}</h3>
-              <p className="text-sm text-[#5B6470] dark:text-[#A1AEB1] mt-2">{feature.desc}</p>
+    <div className="min-h-screen bg-[#F8F6F2] dark:bg-[#0D0E11]">
+      {/* Navigation - Clean and minimal */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? 'bg-[#F8F6F2]/80 dark:bg-[#0D0E11]/80 backdrop-blur-xl border-b border-[#E8E4DC] dark:border-[#1A1C20]' : ''
+      }`}>
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-[#FF8449] to-[#C9501C] shadow-lg shadow-[#FF8449]/20">
+              <span className="text-white text-lg font-bold">⚡</span>
             </div>
-          ))}
-        </div>
+            <span className="text-xl font-bold tracking-tight text-[#1A1C20] dark:text-[#F0EDE8]">Vigilex</span>
+          </div>
 
-        {/* CTA */}
-        <div className="mt-20 p-8 md:p-12 rounded-2xl bg-white/10 dark:bg-white/5 backdrop-blur-sm border border-white/20 dark:border-white/10">
-          <h2 className="text-3xl font-bold text-[#1C1E21] dark:text-[#EEEBE4]">Ready to get started?</h2>
-          <p className="text-lg text-[#5B6470] dark:text-[#A1AEB1] mt-2">Join thousands of engineers using Vigilex.</p>
-          <Link
-            href="/auth"
-            className="inline-block mt-6 px-8 py-3 bg-gradient-to-br from-[#FF8449] to-[#711A00] text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
+          <div className="hidden md:flex items-center gap-8">
+            <Link href="#features" className="text-sm text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#1A1C20] dark:hover:text-[#F0EDE8] transition-colors font-medium">
+              Features
+            </Link>
+            <Link href="/auth" className="px-5 py-2 bg-[#1A1C20] dark:bg-[#F0EDE8] text-[#F0EDE8] dark:text-[#1A1C20] rounded-lg text-sm font-medium hover:opacity-85 transition-opacity">
+              Get Started
+            </Link>
+          </div>
+
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 rounded-lg hover:bg-[#E8E4DC] dark:hover:bg-[#1A1C20] transition-colors"
           >
-            Get Started Free
-          </Link>
+            <svg className="w-6 h-6 text-[#1A1C20] dark:text-[#F0EDE8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {isMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
         </div>
 
-        {/* Footer */}
-        <div className="mt-16 pt-8 border-t border-[#DCCFBE] dark:border-[#27272A] w-full flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[#5B6470] dark:text-[#A1AEB1]">
-          <div className="flex items-center gap-2">
+        {/* Mobile menu */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-[#F8F6F2] dark:bg-[#0D0E11] border-t border-[#E8E4DC] dark:border-[#1A1C20] px-6 py-4">
+            <div className="flex flex-col gap-4">
+              <Link href="#features" className="text-sm text-[#6B7280] dark:text-[#9CA3AF] hover:text-[#1A1C20] dark:hover:text-[#F0EDE8] transition-colors font-medium">
+                Features
+              </Link>
+              <Link href="/auth" className="px-5 py-2 bg-[#1A1C20] dark:bg-[#F0EDE8] text-[#F0EDE8] dark:text-[#1A1C20] rounded-lg text-sm font-medium hover:opacity-85 transition-opacity text-center">
+                Get Started
+              </Link>
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* Hero Section - Clean and spacious */}
+      <section className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="space-y-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF8449]/10 dark:bg-[#FF8449]/20 rounded-full border border-[#FF8449]/20">
+              <span className="w-2 h-2 rounded-full bg-[#FF8449] animate-pulse"></span>
+              <span className="text-xs font-medium text-[#C9501C] dark:text-[#FF8449]">Live Monitoring • 99.97% Uptime</span>
+            </div>
+
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-[#1A1C20] dark:text-[#F0EDE8] leading-[1.1]">
+              AI-Powered
+              <br />
+              <span className="bg-gradient-to-r from-[#FF8449] to-[#C9501C] bg-clip-text text-transparent">Observability</span>
+            </h1>
+
+            <p className="text-lg text-[#6B7280] dark:text-[#9CA3AF] max-w-lg leading-relaxed">
+              Monitor, analyze, and respond to incidents faster with AI-driven insights. 
+              Built for modern engineering teams.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link
+                href="/auth"
+                className="px-8 py-3.5 bg-gradient-to-r from-[#FF8449] to-[#C9501C] text-white rounded-xl font-medium hover:shadow-lg hover:shadow-[#FF8449]/25 transition-all duration-300 flex items-center justify-center gap-2"
+              >
+                Start Free Trial
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+              <Link
+                href="#features"
+                className="px-8 py-3.5 border border-[#E8E4DC] dark:border-[#2A2C30] rounded-xl text-[#1A1C20] dark:text-[#F0EDE8] font-medium hover:bg-[#F0EDE8] dark:hover:bg-[#1A1C20] transition-all duration-300 flex items-center justify-center gap-2"
+              >
+                Learn More
+              </Link>
+            </div>
+
+            <div className="flex items-center gap-8 pt-4">
+              <div className="flex -space-x-3">
+                {['#FF8449', '#C9501C', '#FF6B35'].map((color, i) => (
+                  <div key={i} className="w-10 h-10 rounded-full border-2 border-[#F8F6F2] dark:border-[#0D0E11]" style={{ background: color }}></div>
+                ))}
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-[#1A1C20] dark:text-[#F0EDE8]">2,000+ engineers</div>
+                <div className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">Trust Vigilex daily</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative hidden lg:block">
+            <div className="relative aspect-square max-w-lg mx-auto">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#FF8449]/20 to-[#C9501C]/10 rounded-3xl blur-2xl"></div>
+              <div className="relative bg-[#F0EDE8] dark:bg-[#1A1C20] rounded-3xl p-8 shadow-2xl border border-[#E8E4DC] dark:border-[#2A2C30]">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-[#36D399]"></div>
+                      <span className="text-sm font-medium text-[#1A1C20] dark:text-[#F0EDE8]">System Healthy</span>
+                    </div>
+                    <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">99.97%</span>
+                  </div>
+                  <div className="h-20 bg-gradient-to-r from-[#FF8449]/20 to-[#FF8449]/5 rounded-xl flex items-end px-4 py-2">
+                    <div className="flex items-end gap-1 w-full h-12">
+                      {[40, 65, 45, 80, 55, 90, 70, 85, 60, 95, 75, 50].map((h, i) => (
+                        <div key={i} className="flex-1 rounded-t-sm bg-[#FF8449]" style={{ height: `${h}%`, opacity: 0.5 + (h / 100) * 0.5 }}></div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-[#6B7280] dark:text-[#9CA3AF]">
+                    <span>0 incidents</span>
+                    <span>24h</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section - Clean grid */}
+      <section id="features" className="py-20 px-6 border-t border-[#E8E4DC] dark:border-[#1A1C20] bg-[#F5F2ED] dark:bg-[#0A0B0E]">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <span className="text-sm font-medium text-[#C9501C] dark:text-[#FF8449] tracking-wider uppercase">Features</span>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#1A1C20] dark:text-[#F0EDE8] mt-3">
+              Built for Engineering Teams
+            </h2>
+            <p className="text-lg text-[#6B7280] dark:text-[#9CA3AF] mt-3 max-w-2xl mx-auto">
+              Everything you need to monitor, debug, and optimize your systems.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: "📊",
+                title: "Real-time Monitoring",
+                desc: "Live metrics and logs with automatic anomaly detection and intelligent alerting."
+              },
+              {
+                icon: "🤖",
+                title: "AI-Powered Analysis",
+                desc: "Root cause analysis and incident summaries powered by advanced language models."
+              },
+              {
+                icon: "⚡",
+                title: "Incident Management",
+                desc: "Track, triage, and resolve incidents faster with AI-assisted workflows."
+              },
+              {
+                icon: "🌐",
+                title: "Service Topology",
+                desc: "Visual dependency mapping with live traffic flow and performance insights."
+              }
+            ].map((feature, i) => (
+              <div key={i} className="group p-8 rounded-2xl bg-[#F8F6F2] dark:bg-[#121418] border border-[#E8E4DC] dark:border-[#1A1C20] hover:border-[#FF8449]/40 hover:shadow-lg hover:shadow-[#FF8449]/5 transition-all duration-300">
+                <div className="text-3xl mb-4">{feature.icon}</div>
+                <h3 className="text-lg font-semibold text-[#1A1C20] dark:text-[#F0EDE8]">{feature.title}</h3>
+                <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2 leading-relaxed">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section - Clean numbers */}
+      <section className="py-20 px-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-bold text-[#1A1C20] dark:text-[#F0EDE8] tracking-tight">99.97%</div>
+            <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2">Uptime</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-bold text-[#1A1C20] dark:text-[#F0EDE8] tracking-tight">&lt; 5s</div>
+            <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2">MTTD</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-bold text-[#1A1C20] dark:text-[#F0EDE8] tracking-tight">3x</div>
+            <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2">Faster Resolution</div>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl md:text-5xl font-bold text-[#1A1C20] dark:text-[#F0EDE8] tracking-tight">100+</div>
+            <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2">Integrations</div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section - Clean and minimal */}
+      <section className="py-20 px-6 border-t border-[#E8E4DC] dark:border-[#1A1C20]">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="p-12 rounded-3xl bg-gradient-to-br from-[#FF8449]/5 to-[#C9501C]/5 dark:from-[#FF8449]/10 dark:to-[#C9501C]/5 border border-[#FF8449]/20">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#1A1C20] dark:text-[#F0EDE8]">
+              Ready to get started?
+            </h2>
+            <p className="text-lg text-[#6B7280] dark:text-[#9CA3AF] mt-3 max-w-xl mx-auto">
+              Join thousands of engineers using Vigilex to monitor and optimize their systems.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+              <Link
+                href="/auth"
+                className="px-8 py-3.5 bg-gradient-to-r from-[#FF8449] to-[#C9501C] text-white rounded-xl font-medium hover:shadow-lg hover:shadow-[#FF8449]/25 transition-all duration-300"
+              >
+                Start Free Trial
+              </Link>
+              <Link
+                href="/docs"
+                className="px-8 py-3.5 border border-[#E8E4DC] dark:border-[#2A2C30] rounded-xl text-[#1A1C20] dark:text-[#F0EDE8] font-medium hover:bg-[#F0EDE8] dark:hover:bg-[#1A1C20] transition-all duration-300"
+              >
+                View Documentation
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer - Clean and minimal */}
+      <footer className="border-t border-[#E8E4DC] dark:border-[#1A1C20] px-6 py-8 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[#6B7280] dark:text-[#9CA3AF]">
+          <div className="flex items-center gap-3">
             <span className="text-[#FF8449]">⚡</span>
-            <span className="font-semibold text-[#1C1E21] dark:text-[#EEEBE4]">Vigilex</span>
+            <span className="font-semibold text-[#1A1C20] dark:text-[#F0EDE8]">Vigilex</span>
             <span>© 2024</span>
           </div>
-          <div className="flex gap-6">
-            <Link href="/privacy" className="hover:text-[#1C1E21] dark:hover:text-[#EEEBE4]">Privacy</Link>
-            <Link href="/terms" className="hover:text-[#1C1E21] dark:hover:text-[#EEEBE4]">Terms</Link>
-            <Link href="/support" className="hover:text-[#1C1E21] dark:hover:text-[#EEEBE4]">Support</Link>
+          <div className="flex flex-wrap gap-6">
+            <Link href="/privacy" className="hover:text-[#1A1C20] dark:hover:text-[#F0EDE8] transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-[#1A1C20] dark:hover:text-[#F0EDE8] transition-colors">Terms</Link>
+            <Link href="/support" className="hover:text-[#1A1C20] dark:hover:text-[#F0EDE8] transition-colors">Support</Link>
+            <Link href="/blog" className="hover:text-[#1A1C20] dark:hover:text-[#F0EDE8] transition-colors">Blog</Link>
           </div>
         </div>
-      </div>
+      </footer>
     </div>
   )
 }
