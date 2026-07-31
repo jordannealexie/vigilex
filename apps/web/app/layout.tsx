@@ -54,7 +54,9 @@ export default function RootLayout({
   const [isDark, setIsDark] = useState(true)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
-  const isAuthPage = pathname === '/auth' || pathname === '/login' || pathname === '/signup'
+  
+  // Pages that should NOT show the sidebar (public pages)
+  const isPublicPage = pathname === '/auth' || pathname === '/login' || pathname === '/signup' || pathname === '/landing'
 
   useEffect(() => {
     document.documentElement.classList.add('dark')
@@ -90,7 +92,6 @@ export default function RootLayout({
   }
 
   const handleLogout = () => {
-    // Clear auth state and redirect to login
     localStorage.removeItem('auth-storage')
     router.push('/auth')
   }
@@ -100,8 +101,8 @@ export default function RootLayout({
     return pathname.startsWith(href)
   }
 
-  // If auth page, render without sidebar
-  if (isAuthPage) {
+  // If public page, render without sidebar
+  if (isPublicPage) {
     return (
       <html lang="en">
         <body>
