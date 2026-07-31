@@ -2,6 +2,21 @@
 
 import Link from "next/link"
 import { useState, useEffect } from "react"
+import { 
+  Zap, 
+  Activity, 
+  Bot, 
+  Shield, 
+  Globe, 
+  BarChart3,
+  ChevronRight,
+  Menu,
+  X,
+  Users,
+  Clock,
+  Gauge,
+  Layers
+} from "lucide-react"
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -17,14 +32,14 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-[#F8F6F2] dark:bg-[#0D0E11]">
-      {/* Navigation - Clean and minimal */}
+      {/* Navigation */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled ? 'bg-[#F8F6F2]/80 dark:bg-[#0D0E11]/80 backdrop-blur-xl border-b border-[#E8E4DC] dark:border-[#1A1C20]' : ''
       }`}>
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-[#FF8449] to-[#C9501C] shadow-lg shadow-[#FF8449]/20">
-              <span className="text-white text-lg font-bold">⚡</span>
+              <Zap className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-bold tracking-tight text-[#1A1C20] dark:text-[#F0EDE8]">Vigilex</span>
           </div>
@@ -42,13 +57,11 @@ export default function LandingPage() {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden p-2 rounded-lg hover:bg-[#E8E4DC] dark:hover:bg-[#1A1C20] transition-colors"
           >
-            <svg className="w-6 h-6 text-[#1A1C20] dark:text-[#F0EDE8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {isMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
+            {isMenuOpen ? (
+              <X className="w-6 h-6 text-[#1A1C20] dark:text-[#F0EDE8]" />
+            ) : (
+              <Menu className="w-6 h-6 text-[#1A1C20] dark:text-[#F0EDE8]" />
+            )}
           </button>
         </div>
 
@@ -67,7 +80,7 @@ export default function LandingPage() {
         )}
       </nav>
 
-      {/* Hero Section - Clean and spacious */}
+      {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8">
@@ -93,9 +106,7 @@ export default function LandingPage() {
                 className="px-8 py-3.5 bg-gradient-to-r from-[#FF8449] to-[#C9501C] text-white rounded-xl font-medium hover:shadow-lg hover:shadow-[#FF8449]/25 transition-all duration-300 flex items-center justify-center gap-2"
               >
                 Start Free Trial
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
+                <ChevronRight className="w-4 h-4" />
               </Link>
               <Link
                 href="#features"
@@ -112,7 +123,10 @@ export default function LandingPage() {
                 ))}
               </div>
               <div>
-                <div className="text-sm font-semibold text-[#1A1C20] dark:text-[#F0EDE8]">2,000+ engineers</div>
+                <div className="text-sm font-semibold text-[#1A1C20] dark:text-[#F0EDE8] flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  2,000+ engineers
+                </div>
                 <div className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">Trust Vigilex daily</div>
               </div>
             </div>
@@ -148,7 +162,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features Section - Clean grid */}
+      {/* Features Section */}
       <section id="features" className="py-20 px-6 border-t border-[#E8E4DC] dark:border-[#1A1C20] bg-[#F5F2ED] dark:bg-[#0A0B0E]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -164,59 +178,65 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
-                icon: "📊",
+                icon: Activity,
                 title: "Real-time Monitoring",
                 desc: "Live metrics and logs with automatic anomaly detection and intelligent alerting."
               },
               {
-                icon: "🤖",
+                icon: Bot,
                 title: "AI-Powered Analysis",
                 desc: "Root cause analysis and incident summaries powered by advanced language models."
               },
               {
-                icon: "⚡",
+                icon: Shield,
                 title: "Incident Management",
                 desc: "Track, triage, and resolve incidents faster with AI-assisted workflows."
               },
               {
-                icon: "🌐",
+                icon: Globe,
                 title: "Service Topology",
                 desc: "Visual dependency mapping with live traffic flow and performance insights."
               }
-            ].map((feature, i) => (
-              <div key={i} className="group p-8 rounded-2xl bg-[#F8F6F2] dark:bg-[#121418] border border-[#E8E4DC] dark:border-[#1A1C20] hover:border-[#FF8449]/40 hover:shadow-lg hover:shadow-[#FF8449]/5 transition-all duration-300">
-                <div className="text-3xl mb-4">{feature.icon}</div>
-                <h3 className="text-lg font-semibold text-[#1A1C20] dark:text-[#F0EDE8]">{feature.title}</h3>
-                <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2 leading-relaxed">{feature.desc}</p>
-              </div>
-            ))}
+            ].map((feature, i) => {
+              const Icon = feature.icon
+              return (
+                <div key={i} className="group p-8 rounded-2xl bg-[#F8F6F2] dark:bg-[#121418] border border-[#E8E4DC] dark:border-[#1A1C20] hover:border-[#FF8449]/40 hover:shadow-lg hover:shadow-[#FF8449]/5 transition-all duration-300">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-[#FF8449]/10 dark:bg-[#FF8449]/20 mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Icon className="w-6 h-6 text-[#C9501C] dark:text-[#FF8449]" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-[#1A1C20] dark:text-[#F0EDE8]">{feature.title}</h3>
+                  <p className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2 leading-relaxed">{feature.desc}</p>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>
 
-      {/* Stats Section - Clean numbers */}
+      {/* Stats Section */}
       <section className="py-20 px-6 max-w-7xl mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div className="text-center">
-            <div className="text-4xl md:text-5xl font-bold text-[#1A1C20] dark:text-[#F0EDE8] tracking-tight">99.97%</div>
-            <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2">Uptime</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl md:text-5xl font-bold text-[#1A1C20] dark:text-[#F0EDE8] tracking-tight">&lt; 5s</div>
-            <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2">MTTD</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl md:text-5xl font-bold text-[#1A1C20] dark:text-[#F0EDE8] tracking-tight">3x</div>
-            <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2">Faster Resolution</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl md:text-5xl font-bold text-[#1A1C20] dark:text-[#F0EDE8] tracking-tight">100+</div>
-            <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2">Integrations</div>
-          </div>
+          {[
+            { value: "99.97%", label: "Uptime", icon: Gauge },
+            { value: "< 5s", label: "MTTD", icon: Clock },
+            { value: "3x", label: "Faster Resolution", icon: BarChart3 },
+            { value: "100+", label: "Integrations", icon: Layers }
+          ].map((stat, i) => {
+            const Icon = stat.icon
+            return (
+              <div key={i} className="text-center">
+                <div className="flex justify-center mb-2">
+                  <Icon className="w-6 h-6 text-[#C9501C] dark:text-[#FF8449]" />
+                </div>
+                <div className="text-4xl md:text-5xl font-bold text-[#1A1C20] dark:text-[#F0EDE8] tracking-tight">{stat.value}</div>
+                <div className="text-sm text-[#6B7280] dark:text-[#9CA3AF] mt-2">{stat.label}</div>
+              </div>
+            )
+          })}
         </div>
       </section>
 
-      {/* CTA Section - Clean and minimal */}
+      {/* CTA Section */}
       <section className="py-20 px-6 border-t border-[#E8E4DC] dark:border-[#1A1C20]">
         <div className="max-w-4xl mx-auto text-center">
           <div className="p-12 rounded-3xl bg-gradient-to-br from-[#FF8449]/5 to-[#C9501C]/5 dark:from-[#FF8449]/10 dark:to-[#C9501C]/5 border border-[#FF8449]/20">
@@ -229,13 +249,14 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
               <Link
                 href="/auth"
-                className="px-8 py-3.5 bg-gradient-to-r from-[#FF8449] to-[#C9501C] text-white rounded-xl font-medium hover:shadow-lg hover:shadow-[#FF8449]/25 transition-all duration-300"
+                className="px-8 py-3.5 bg-gradient-to-r from-[#FF8449] to-[#C9501C] text-white rounded-xl font-medium hover:shadow-lg hover:shadow-[#FF8449]/25 transition-all duration-300 flex items-center justify-center gap-2"
               >
                 Start Free Trial
+                <ChevronRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/docs"
-                className="px-8 py-3.5 border border-[#E8E4DC] dark:border-[#2A2C30] rounded-xl text-[#1A1C20] dark:text-[#F0EDE8] font-medium hover:bg-[#F0EDE8] dark:hover:bg-[#1A1C20] transition-all duration-300"
+                className="px-8 py-3.5 border border-[#E8E4DC] dark:border-[#2A2C30] rounded-xl text-[#1A1C20] dark:text-[#F0EDE8] font-medium hover:bg-[#F0EDE8] dark:hover:bg-[#1A1C20] transition-all duration-300 flex items-center justify-center gap-2"
               >
                 View Documentation
               </Link>
@@ -244,11 +265,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer - Clean and minimal */}
+      {/* Footer */}
       <footer className="border-t border-[#E8E4DC] dark:border-[#1A1C20] px-6 py-8 max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[#6B7280] dark:text-[#9CA3AF]">
           <div className="flex items-center gap-3">
-            <span className="text-[#FF8449]">⚡</span>
+            <Zap className="w-4 h-4 text-[#FF8449]" />
             <span className="font-semibold text-[#1A1C20] dark:text-[#F0EDE8]">Vigilex</span>
             <span>© 2024</span>
           </div>
