@@ -28,26 +28,26 @@
 
 ---
 
-## 📊 Overview
+##Overview
 
 Vigilex is a production-grade, AI-powered observability and incident intelligence platform designed for modern engineering teams. It helps you monitor, analyze, and respond to incidents faster with the power of AI.
 
 ### Key Features
 
-- **🔍 Log Management** - Centralized log ingestion, search, and analysis with full-text and semantic search
-- **🚨 Error Monitoring** - Automatic error grouping, fingerprinting, and tracking
-- **📈 API Monitoring** - Performance metrics, latency tracking, and Apdex scores
-- **💡 AI-Powered Analysis** - Root cause analysis, incident summarization, and intelligent alerts
-- **🎯 Incident Management** - Auto-detection, severity scoring, and timeline tracking
-- **📊 Real-time Dashboards** - Executive overviews, service maps, and custom views
-- **🤖 AI Assistant** - Chat-based interface for querying your observability data
-- **🔔 Alert System** - Multi-channel alerts (Email, Slack, Discord, PagerDuty)
-- **📦 Deployment Tracking** - Correlate deployments with incidents
-- **👥 Team Collaboration** - Organizations, roles, and team management
+- **Log Management** - Centralized log ingestion, search, and analysis with full-text and semantic search
+- **Error Monitoring** - Automatic error grouping, fingerprinting, and tracking
+- **API Monitoring** - Performance metrics, latency tracking, and Apdex scores
+- **AI-Powered Analysis** - Root cause analysis, incident summarization, and intelligent alerts
+- **Incident Management** - Auto-detection, severity scoring, and timeline tracking
+- **Real-time Dashboards** - Executive overviews, service maps, and custom views
+- **AI Assistant** - Chat-based interface for querying your observability data
+- **Alert System** - Multi-channel alerts (Email, Slack, Discord, PagerDuty)
+- **Deployment Tracking** - Correlate deployments with incidents
+- **Team Collaboration** - Organizations, roles, and team management
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
